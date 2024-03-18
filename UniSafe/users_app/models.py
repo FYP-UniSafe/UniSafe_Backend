@@ -49,6 +49,7 @@ class UserManager(BaseUserManager):
         return user
     
     def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_active', True)
         user = self.create_user(email, password, **extra_fields)
         user.is_superuser = True
         user.is_staff = True
@@ -171,7 +172,7 @@ class OTP(models.Model):
 
 @receiver(post_save, sender=User)
 def create_otp_and_send_email(sender, instance, created, **kwargs):
-    if created:
+    if created and not instance.is_superuser:
         otp = OTP.objects.create(user=instance)
         
         subject = "Your UniSafe OTP"

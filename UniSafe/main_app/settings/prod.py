@@ -4,7 +4,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
-ROOT_URLCONF = 'main.urls'
+ROOT_URLCONF = 'main_app.urls'
 
 DATABASES = {
         'default': {
