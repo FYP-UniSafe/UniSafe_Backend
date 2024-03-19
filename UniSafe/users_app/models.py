@@ -172,7 +172,7 @@ class OTP(models.Model):
 
 @receiver(post_save, sender=User)
 def create_otp_and_send_email(sender, instance, created, **kwargs):
-    if created and not instance.is_superuser:
+    if created and not instance.is_superuser: 
         otp = OTP.objects.create(user=instance)
         
         subject = "Your UniSafe OTP"

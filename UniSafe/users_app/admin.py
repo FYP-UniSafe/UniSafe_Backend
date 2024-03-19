@@ -7,10 +7,26 @@ class StudentProfileInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = "Profile"
 
+
+class GenderDeskProfileInline(admin.StackedInline):
+    model = GenderDesk
+    can_delete = False
+    verbose_name_plural = "Profile"
+
+class ConsultantProfileInline(admin.StackedInline):
+    model = Consultant
+    can_delete = False
+    verbose_name_plural = "Profile"
+
+class PoliceProfileInline(admin.StackedInline):
+    model = Police
+    can_delete = False
+    verbose_name_plural = "Profile"
+
 class UserAdmin(UserAdmin):
     model = User
     verbose_name_plural = "User"
-    inlines = [StudentProfileInline]
+    inlines = [StudentProfileInline, GenderDeskProfileInline, ConsultantProfileInline, PoliceProfileInline]
 
     list_display = (
         "id",
@@ -18,7 +34,7 @@ class UserAdmin(UserAdmin):
         "full_name",
         "phone_number",
         "gender",
-        "is_student",
+        "is_superuser",
         "is_active",
         "date_joined",
         "last_login",)

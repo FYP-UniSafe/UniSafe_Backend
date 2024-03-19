@@ -13,10 +13,10 @@ class CreateReportSerializer(serializers.ModelSerializer):
 
 
 class ReportListSerializer(serializers.ModelSerializer):
-    reporter = serializers.CharField(source='reporter_full_name')
-    assigned_gd = serializers.CharField(source='assigned_gd.user')
-    # police_status = serializers.CharField(source='police_status')
-    assigned_officer = serializers.CharField(source='assigned_officer.user')
+    # reporter = serializers.CharField(source='reporter_full_name')
+    # assigned_gd = serializers.CharField(source='assigned_gd.user')
+    # # police_status = serializers.CharField(source='police_status')
+    # assigned_officer = serializers.CharField(source='assigned_officer.user')
 
     class Meta:
         model = Report

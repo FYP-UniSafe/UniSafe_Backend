@@ -22,7 +22,7 @@ class Report(models.Model):
     reporter_email = models.EmailField(editable=False, blank=False)
     reporter_phone = models.CharField(max_length=20, editable=False, blank=False)
     
-    report_for = models.CharField(max_length=50, choices=REPORT_FOR_CHOICES)
+    report_for = models.CharField(max_length=10, choices=REPORT_FOR_CHOICES)
     
     # # Victim's Details
     victim_email = models.EmailField()
@@ -50,21 +50,8 @@ class Report(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # Check if the instance is being created
-            # Count all existing reports in the system
+        if not self.pk: 
             total_reports = Report.objects.count() + 1
             self.report_id = f'RE-{self.reporter_reg_no}-{total_reports}'
-        
-            # profile = self.reporter.profile.student_profile
-            # student = self.reporter
-        
-            # if self.report_for == 'Self':
-            #     # Populate victim details from student's profile
-            #     self.victim_email = student.email
-            #     self.victim_full_name = student.full_name
-            #     self.victim_phone = student.phone_number
-            #     self.victim_gender = student.gender
-            #     self.victim_college = profile.college
-            #     self.victim_reg_no = profile.reg_no
         
         super().save(*args, **kwargs)
