@@ -47,7 +47,7 @@ class Report(models.Model):
     # Police Status
     police_status = models.CharField(max_length=20, default='Unfowarded')
     assigned_officer = models.ForeignKey(Police, on_delete=models.DO_NOTHING, null=True, blank=True)
-
+ 
 
     def save(self, *args, **kwargs):
         if not self.pk: 
