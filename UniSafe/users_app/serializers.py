@@ -50,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
 class StudentProfile(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['reg_no', 'college', 'report_count']
+        fields = ['reg_no', 'custom_id', 'college', 'report_count']
     
 class StudentProfileSerializer(serializers.ModelSerializer):
     profile = StudentProfile()
@@ -111,7 +111,7 @@ class StudentSignupSerializer(serializers.ModelSerializer):
 class GenderDeskProfile(serializers.ModelSerializer):
     class Meta:
         model = GenderDesk
-        fields = ['staff_no', 'office', 'report_count']
+        fields = ['staff_no', 'custom_id', 'office', 'report_count']
     
 class GenderDeskProfileSerializer(serializers.ModelSerializer):
     profile = GenderDeskProfile()
@@ -173,7 +173,7 @@ class GenderDeskSignupSerializer(serializers.ModelSerializer):
 class ConsultantProfile(serializers.ModelSerializer):
     class Meta:
         model = Consultant
-        fields = ['staff_no', 'office', 'session_count']
+        fields = ['staff_no', 'custom_id', 'office', 'session_count']
     
 class ConsultantProfileSerializer(serializers.ModelSerializer):
     profile = ConsultantProfile()
@@ -235,7 +235,7 @@ class ConsultantSignupSerializer(serializers.ModelSerializer):
 class PoliceProfile(serializers.ModelSerializer):
     class Meta:
         model = Police
-        fields = ['police_no', 'station', 'report_count']
+        fields = ['police_no', 'custom_id', 'station', 'report_count']
     
 class PoliceProfileSerializer(serializers.ModelSerializer):
     profile = PoliceProfile()

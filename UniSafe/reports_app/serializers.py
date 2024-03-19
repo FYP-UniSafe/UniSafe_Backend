@@ -9,7 +9,7 @@ class ReportSerializer(serializers.ModelSerializer):
 class CreateReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
-        fields = '__all__'
+        fields = ['status', 'assigned_gd', 'report_for', 'victim_email', 'victim_full_name', 'victim_phone', 'victim_gender', 'victim_reg_no', 'victim_college', 'abuse_type', 'date_and_time', 'location', 'description', 'evidence', 'perpetrator_fullname', 'perpetrator_gender', 'relationship', 'police_status', 'assigned_officer']
 
 
 class ReportListSerializer(serializers.ModelSerializer):
