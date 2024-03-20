@@ -9,10 +9,8 @@ from rest_framework import status, generics
 from django.contrib.auth.models import User
 from .serializers import *
 from django.db.models import F
-# from . import models
+
 from users_app.models import *
-
-
 
 
 class CreateReportAPIView(generics.CreateAPIView):
@@ -22,11 +20,17 @@ class CreateReportAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         # Check if the user is authenticated
         if not self.request.user.is_authenticated:
-            return Response({"error": "Authentication Required"}, status=status.HTTP_401_UNAUTHORIZED)
-        
+            return Response(
+                {"error": "Authentication Required"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
         # Check if the authenticated user is a student
         if not self.request.user.is_student:
-            return Response({"error": "Only students are allowed to create reports"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "Only students are allowed to create reports"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         # Get the authenticated user
         user = self.request.user
@@ -37,13 +41,13 @@ class CreateReportAPIView(generics.CreateAPIView):
         # Populate Reporter Contact Details fields from the user's profile
         profile = user.profile
         reporter_data = {
-            'reporter': student_instance,
-            'reporter_full_name': user.full_name,
-            'reporter_gender': user.gender,
-            'reporter_email': user.email,
-            'reporter_phone': user.phone_number,
-            'reporter_college': profile.college,
-            'reporter_reg_no': profile.reg_no,
+            "reporter": student_instance,
+            "reporter_full_name": user.full_name,
+            "reporter_gender": user.gender,
+            "reporter_email": user.email,
+            "reporter_phone": user.phone_number,
+            "reporter_college": profile.college,
+            "reporter_reg_no": profile.reg_no,
         }
 
         # Merge reporter_data into serializer data
@@ -60,4 +64,6 @@ class CreateReportAPIView(generics.CreateAPIView):
         # Get the success headers
         headers = self.get_success_headers(serializer.data)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

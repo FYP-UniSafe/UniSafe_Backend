@@ -6,10 +6,9 @@ import random
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
+
 # from django.utils import timezone
 # from django.template.loader import render_to_string
-
-
 
 
 # Custom User Manager
@@ -18,19 +17,18 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
         email = self.normalize_email(email)
-        user = self.model(email=email,**extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
-    
+
     def create_student(self, email, password=None, **extra_fields):
         user = self.create_user(email, password, **extra_fields)
         user.is_student = True
         user.save(using=self._db)
         user.save()
         return user
-    
+
     def create_genderdesk(self, email, password=None, **extra_fields):
         user = self.create_user(email, password, **extra_fields)
         user.is_genderdesk = True
@@ -38,32 +36,29 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         user.save()
         return user
-    
+
     def create_police(self, email, password=None, **extra_fields):
         user = self.create_user(email, password, **extra_fields)
         user.is_police = True
         user.save(using=self._db)
         user.save()
         return user
-    
+
     def create_consultant(self, email, password=None, **extra_fields):
         user = self.create_user(email, password, **extra_fields)
         user.is_consultant = True
         user.save(using=self._db)
         user.save()
         return user
-    
+
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault("is_active", True)
         user = self.create_user(email, password, **extra_fields)
         user.is_superuser = True
         user.is_staff = True
         user.is_admin = True
         user.save(using=self._db)
         return user
-
-
-
 
 
 class User(AbstractUser):
@@ -78,15 +73,15 @@ class User(AbstractUser):
     is_genderdesk = models.BooleanField(default=False)
     is_police = models.BooleanField(default=False)
     is_consultant = models.BooleanField(default=False)
-    
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
-    
+
     objects = UserManager()
-    
+
     def __str__(self):
         return self.email
-    
+
     @property
     def profile(self):
         if self.is_student:
@@ -99,13 +94,13 @@ class User(AbstractUser):
             return self.police_profile
         else:
             return None
-    
+
     def send_password_reset_email(self):
-        if not hasattr(self, 'otp'):
+        if not hasattr(self, "otp"):
             otp = OTP.objects.create(student=self)
         else:
             otp = self.otp
-    
+
         subject = "Password Reset OTP"
         message_reset = """
         <!DOCTYPE html>
@@ -144,10 +139,10 @@ class User(AbstractUser):
         """.format(
             instance=self, otp=otp
         )
-        
+
         # Obtain the plain text version of the email by stripping HTML tags
         plain_message = strip_tags(message_reset)
-        
+
         # Send email
         send_mail(
             subject,
@@ -163,21 +158,19 @@ class OTP(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     otp = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    
+
     def save(self, *args, **kwargs):
         self.otp = random.randint(100000, 999999)
         super().save(*args, **kwargs)
 
 
-
-
 @receiver(post_save, sender=User)
 def create_otp_and_send_email(sender, instance, created, **kwargs):
-    if created and not instance.is_superuser: 
+    if created and not instance.is_superuser:
         otp = OTP.objects.create(user=instance)
-        
+
         subject = "Your UniSafe OTP"
-        
+
         html_message = """
         <!DOCTYPE html>
         <html lang="en">
@@ -215,9 +208,9 @@ def create_otp_and_send_email(sender, instance, created, **kwargs):
         """.format(
             instance=instance, otp=otp
         )
-        
+
         plain_message = strip_tags(html_message)
-        
+
         email = EmailMultiAlternatives(
             subject, plain_message, "unisafe.reports@gmail.com", [instance.email]
         )
@@ -225,21 +218,26 @@ def create_otp_and_send_email(sender, instance, created, **kwargs):
         email.send()
 
 
-
-
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="student_profile")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True, related_name="student_profile"
+    )
     custom_id = models.CharField(max_length=25, unique=True)
     reg_no = models.CharField(max_length=25, unique=True, blank=False)
     college = models.CharField(max_length=20, blank=False)
     report_count = models.PositiveIntegerField(default=0)
-    
+
     def __str__(self):
         return self.user.email
 
 
 class GenderDesk(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="genderdesk_profile")
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="genderdesk_profile",
+    )
     custom_id = models.CharField(max_length=25, unique=True)
     staff_no = models.CharField(max_length=25, unique=True, blank=False)
     office = models.CharField(max_length=20)
@@ -249,11 +247,13 @@ class GenderDesk(models.Model):
         return self.user.email
 
 
-
-
-
 class Consultant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="consultant_profile")
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="consultant_profile",
+    )
     custom_id = models.CharField(max_length=25, unique=True)
     staff_no = models.CharField(max_length=25, unique=True, blank=False)
     office = models.CharField(max_length=20)
@@ -263,11 +263,10 @@ class Consultant(models.Model):
         return self.user.email
 
 
-
-
-
 class Police(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="police_profile")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True, related_name="police_profile"
+    )
     custom_id = models.CharField(max_length=25, unique=True)
     police_no = models.CharField(max_length=25, unique=True, blank=False)
     station = models.CharField(max_length=20, blank=False)
@@ -277,30 +276,32 @@ class Police(models.Model):
         return self.user.email
 
 
-
-
 @receiver(pre_save)
 def set_custom_id(sender, instance, *args, **kwargs):
     if isinstance(instance, Student):
-        user_type_prefix = 'S'
+        user_type_prefix = "S"
         student_count = Student.objects.count()
     elif isinstance(instance, GenderDesk):
-        user_type_prefix = 'G'
+        user_type_prefix = "G"
         genderdesk_count = GenderDesk.objects.count()
     elif isinstance(instance, Police):
-        user_type_prefix = 'P'
+        user_type_prefix = "P"
         police_count = Police.objects.count()
     elif isinstance(instance, Consultant):
-        user_type_prefix = 'C'
+        user_type_prefix = "C"
         consultant_count = Consultant.objects.count()
     else:
         return
-    
-    if user_type_prefix == 'S':
+
+    if user_type_prefix == "S":
         instance.custom_id = f"{user_type_prefix}{instance.reg_no}-{student_count+1}"
-    elif user_type_prefix == 'G':
-        instance.custom_id = f"{user_type_prefix}{instance.staff_no}-{genderdesk_count+1}"
-    elif user_type_prefix == 'P':
+    elif user_type_prefix == "G":
+        instance.custom_id = (
+            f"{user_type_prefix}{instance.staff_no}-{genderdesk_count+1}"
+        )
+    elif user_type_prefix == "P":
         instance.custom_id = f"{user_type_prefix}{instance.police_no}-{police_count+1}"
-    elif user_type_prefix == 'C':
-        instance.custom_id = f"{user_type_prefix}{instance.staff_no}-{consultant_count+1}"
+    elif user_type_prefix == "C":
+        instance.custom_id = (
+            f"{user_type_prefix}{instance.staff_no}-{consultant_count+1}"
+        )

@@ -8,7 +8,9 @@ load_dotenv()
 
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir)))
+)
 
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
@@ -23,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "users_app",
     "reports_app",
+    "statistics_app",
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",

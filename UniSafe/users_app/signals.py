@@ -11,17 +11,17 @@ def create_profile(sender, instance, created, **kwargs):
         if not created:
             profile.save()
     elif created and instance.is_genderdesk:
-            profile, created = GenderDesk.objects.get_or_create(user=instance)
-            if not created:
-                profile.save()
+        profile, created = GenderDesk.objects.get_or_create(user=instance)
+        if not created:
+            profile.save()
     elif created and instance.is_consultant:
-            profile, created = Consultant.objects.get_or_create(user=instance)
-            if not created:
-                profile.save()
+        profile, created = Consultant.objects.get_or_create(user=instance)
+        if not created:
+            profile.save()
     elif created and instance.is_police:
-            profile, created = Police.objects.get_or_create(user=instance)
-            if not created:
-                profile.save()
+        profile, created = Police.objects.get_or_create(user=instance)
+        if not created:
+            profile.save()
 
 
 @receiver(post_save, sender=User)

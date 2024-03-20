@@ -1,5 +1,5 @@
 1. Anonymous reporting 
 -wher ethe reporter details are not necessary, only the evidence and the offenser.
 
-2. Need for custom_id to represent user profiles, they won't be necessarily PK
+2. Need for custom_id to represent user profiles, they won't be necessarily PK (DONE)
 but they'll be used to link modules and identify the users associated with them.
