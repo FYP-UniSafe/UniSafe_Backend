@@ -109,11 +109,13 @@ class StudentSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
     reg_no = serializers.CharField(write_only=True)
     college = serializers.CharField(write_only=True)
+    # custom_id = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
         fields = (
             "id",
+            # "custom_id",
             "email",
             "full_name",
             "phone_number",

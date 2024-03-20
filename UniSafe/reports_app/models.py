@@ -1,17 +1,20 @@
 from django.db import models
-from users_app.models import Student, GenderDesk, Police
+from users_app.models import *
 
 
 class Report(models.Model):
     REPORT_FOR_CHOICES = [("Self", "Self"), ("Else", "Else")]
 
-    report_id = models.CharField(primary_key=True, max_length=10, unique=True)
+    report_id = models.CharField(primary_key=True, max_length=25, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20, default="PENDING"
-    )  # Pending, In Progress, Resolved, Rejected
+    )  # Pending, Rejected, In Progress, Forwarded to Police, Resolved.
     assigned_gd = models.ForeignKey(
-        GenderDesk, on_delete=models.DO_NOTHING, null=True, blank=True
+        GenderDesk, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
+    )
+    rejection_reason = models.TextField(
+        max_length=255, blank=True, null=True, default=None
     )
 
     # Reporter Contact Details
@@ -48,9 +51,9 @@ class Report(models.Model):
     relationship = models.TextField(max_length=20)
 
     # Police Status
-    police_status = models.CharField(max_length=20, default="UNFOWARDED")
+    police_status = models.CharField(max_length=20, default="UNFORWARDED")
     assigned_officer = models.ForeignKey(
-        Police, on_delete=models.DO_NOTHING, null=True, blank=True
+        Police, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
     )
 
     def save(self, *args, **kwargs):

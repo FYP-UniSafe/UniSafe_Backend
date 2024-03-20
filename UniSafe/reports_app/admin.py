@@ -15,7 +15,15 @@ class ReportAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "General Information",
-            {"fields": ("report_id", "status", "assigned_gd", "report_for")},
+            {
+                "fields": (
+                    "report_id",
+                    "status",
+                    "assigned_gd",
+                    "rejection_reason",
+                    "report_for",
+                )
+            },
         ),
         (
             "Reporter Contact Details",
@@ -65,6 +73,8 @@ class ReportAdmin(admin.ModelAdmin):
     readonly_fields = (
         "report_id",
         "reporter",
+        "rejection_reason",
+        "assigned_gd",
         "reporter_email",
         "reporter_phone",
         "reporter_full_name",
