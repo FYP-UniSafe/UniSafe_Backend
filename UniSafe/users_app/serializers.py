@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id",
+            # "id",
             "email",
             "full_name",
             "phone_number",
@@ -66,7 +66,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id",
+            # "id",
             "email",
             "full_name",
             "phone_number",
@@ -114,7 +114,7 @@ class StudentSignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "id",
+            # "id",
             # "custom_id",
             "email",
             "full_name",
@@ -151,7 +151,7 @@ class GenderDeskProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id",
+            # "id",
             "email",
             "full_name",
             "phone_number",
@@ -233,7 +233,7 @@ class ConsultantProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id",
+            # "id",
             "email",
             "full_name",
             "phone_number",
@@ -315,7 +315,7 @@ class PoliceProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id",
+            # "id",
             "email",
             "full_name",
             "phone_number",

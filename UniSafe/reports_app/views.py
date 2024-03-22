@@ -13,7 +13,7 @@ class CreateReportView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         profile = user.profile
-        student_instance, _ = Student.objects.get_or_create(user=user)
+        # student_instance, _ = Student.objects.get_or_create(user=user)
 
         if not user.is_student:
             return Response(
@@ -22,7 +22,8 @@ class CreateReportView(generics.CreateAPIView):
             )
 
         reporter_data = {
-            "reporter": student_instance,
+            # "reporter": student_instance,
+            "reporter": profile,
             "reporter_full_name": user.full_name,
             "reporter_gender": user.gender,
             "reporter_email": user.email,
@@ -54,7 +55,7 @@ class AcceptReportView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
 
         user = request.user
-        genderdesk_instance, _ = GenderDesk.objects.get_or_create(user=user)
+        # genderdesk_instance, _ = GenderDesk.objects.get_or_create(user=user)
 
         if not user.is_genderdesk:
             return Response(
@@ -97,7 +98,8 @@ class AcceptReportView(generics.GenericAPIView):
                 )
 
             report.status = "IN PROGRESS"
-            report.assigned_gd = genderdesk_instance
+            # report.assigned_gd = genderdesk_instance
+            report.assigned_gd = user.profile
             report.rejection_reason = None
             report.save()
 
@@ -119,7 +121,7 @@ class RejectReportView(generics.GenericAPIView):
     def put(self, request, *args, **kwargs):
         user = request.user
         profile = user.profile
-        genderdesk_instance, _ = GenderDesk.objects.get_or_create(user=user)
+        # genderdesk_instance, _ = GenderDesk.objects.get_or_create(user=user)
 
         if not user.is_genderdesk:
             return Response(
@@ -158,7 +160,8 @@ class RejectReportView(generics.GenericAPIView):
 
         # Check if the report is already accepted by another GenderDesk personnel
         # One can reject if it was initially accepted by themselves
-        if report.status == "ACCEPTED" and report.assigned_gd != genderdesk_instance:
+        # if report.status == "ACCEPTED" and report.assigned_gd != genderdesk_instance:
+        if report.status == "IN PROGRESS" and report.assigned_gd != profile:
             return Response(
                 {
                     "error": "Cannot reject a report accepted by another GenderDesk member."
@@ -185,7 +188,8 @@ class RejectReportView(generics.GenericAPIView):
         serializer.validated_data["status"] = "REJECTED"
         serializer.save()
 
-        report.assigned_gd = genderdesk_instance
+        # report.assigned_gd = genderdesk_instance
+        report.assigned_gd = user.profile
         report.save()
 
         response_data = {
@@ -204,7 +208,7 @@ class ForwardReportView(generics.GenericAPIView):
     def put(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         user = request.user
-        genderdesk_instance, _ = GenderDesk.objects.get_or_create(user=user)
+        # genderdesk_instance, _ = GenderDesk.objects.get_or_create(user=user)
 
         if not user.is_genderdesk:
             return Response(
@@ -239,7 +243,8 @@ class ForwardReportView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if report.assigned_gd != genderdesk_instance:
+        # if report.assigned_gd != genderdesk_instance:
+        if report.assigned_gd != user.profile:
             return Response(
                 {
                     "error": "Only the GenderDesk member who initially accepted the report can forward it to the police."
@@ -268,7 +273,7 @@ class ReceiveReportView(generics.GenericAPIView):
     def put(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         user = request.user
-        police_instance, _ = Police.objects.get_or_create(user=user)
+        # police_instance, _ = Police.objects.get_or_create(user=user)
 
         if not user.is_police:
             return Response(
@@ -302,7 +307,8 @@ class ReceiveReportView(generics.GenericAPIView):
                 )
 
             report.police_status = "RECEIVED"
-            report.assigned_officer = police_instance
+            # report.assigned_officer = police_instance
+            report.assigned_officer = user.profile
             report.save()
 
             return Response(
@@ -322,12 +328,13 @@ class CloseReportView(generics.GenericAPIView):
 
     def put(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-
         user = request.user
-        if user.is_genderdesk:
-            genderdesk_instance, _ = GenderDesk.objects.get_or_create(user=user)
-        elif user.is_police:
-            police_instance, _ = Police.objects.get_or_create(user=user)
+
+        if not (user.is_genderdesk or user.is_police):
+            return Response(
+                {"error": "Only GenderDesk or Police personnel can close the report."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         if serializer.is_valid():
             report_id = serializer.validated_data["report_id"]
@@ -340,54 +347,49 @@ class CloseReportView(generics.GenericAPIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            if not (user.is_genderdesk or user.is_police):
-                return Response(
-                    {
-                        "error": "Only GenderDesk or Police personnel can close the report."
-                    },
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-
             if report.status == "RESOLVED":
                 return Response(
                     {"error": "The report has already been closed."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            if user.is_police:
-                if report.status != "FORWARDED TO POLICE":
+            if user.is_genderdesk:
+                if report.assigned_gd != user.profile:
                     return Response(
                         {
-                            "error": "Only reports forwarded to the police can be closed by the police."
+                            "error": "Only the assigned GenderDesk member can close the report."
+                        },
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
+                if report.status != "IN PROGRESS":
+                    return Response(
+                        {
+                            "error": "Report must be in progress to be closed by GenderDesk."
                         },
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-                elif report.police_status != "RECEIVED":
+
+            elif user.is_police:
+                if (
+                    report.status != "FORWARDED TO POLICE"
+                    or report.police_status != "RECEIVED"
+                ):
                     return Response(
-                        {"error": "Only received reports can be closed."},
+                        {"error": "Only received reports can be closed by the Police."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-
-            if user.is_genderdesk and report.assigned_gd != genderdesk_instance:
-                return Response(
-                    {
-                        "error": "Only the assigned GenderDesk member can close the report."
-                    },
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-            elif user.is_police and report.assigned_officer != police_instance:
-                return Response(
-                    {"error": "Only the assigned Police officer can close the report."},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
+                if report.assigned_officer != user.profile:
+                    return Response(
+                        {
+                            "error": "Only the assigned Police officer can close the report."
+                        },
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
 
             report.status = "RESOLVED"
             report.save()
 
-            if user.is_genderdesk:
-                user.profile.report_count += 1
-            elif user.is_police:
-                user.profile.report_count += 1
+            user.profile.report_count += 1
             user.profile.save()
 
             return Response(
@@ -396,3 +398,51 @@ class CloseReportView(generics.GenericAPIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ListAllReportsView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ListAllReportsSerializer
+    queryset = Report.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        if not request.user.is_genderdesk:
+            return Response(
+                {"error": "Only GenderDesk personnel can list all reports."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return super().list(request, *args, **kwargs)
+
+
+class StudentReportsListView(generics.ListAPIView):
+    serializer_class = StudentReportsSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        return Report.objects.filter(reporter_email=user)
+
+
+class AssignedReportsListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = AssignedReportsSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if not user.is_genderdesk:
+            return Report.objects.none()
+        return Report.objects.filter(assigned_gd=user.profile)
+
+
+class ForwardedReportsListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ForwardedReportsSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_genderdesk or user.is_police:
+            return Report.objects.filter(police_status__in=["FORWARDED", "RECEIVED"])
+        else:
+            return Report.objects.none()

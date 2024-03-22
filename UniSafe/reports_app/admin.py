@@ -98,5 +98,7 @@ class ReportAdmin(admin.ModelAdmin):
         "report_for",
     )
 
+    ordering = ("created_on",)
+
 
 admin.site.register(Report, ReportAdmin)

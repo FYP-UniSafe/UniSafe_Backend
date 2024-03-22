@@ -93,3 +93,56 @@ class ReceiveReportSerializer(serializers.Serializer):
 
 class CloseReportSerializer(serializers.Serializer):
     report_id = serializers.CharField(required=True)
+
+
+class ListAllReportsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = [
+            "report_id",
+            "status",
+            "assigned_gd",
+            "reporter",
+            "reporter_full_name",
+            "reporter_gender",
+            "reporter_college",
+            "reporter_reg_no",
+            "reporter_email",
+            "reporter_phone",
+            "report_for",
+            "victim_email",
+            "victim_full_name",
+            "victim_phone",
+            "victim_gender",
+            "victim_reg_no",
+            "victim_college",
+            "abuse_type",
+            "date_and_time",
+            "location",
+            "description",
+            "evidence",
+            "perpetrator_fullname",
+            "perpetrator_gender",
+            "relationship",
+            "police_status",
+            "assigned_officer",
+        ]
+
+
+class StudentReportsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = "__all__"
+
+
+class AssignedReportsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = '__all__'
+
+
+class ForwardedReportsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = '__all__'
+        

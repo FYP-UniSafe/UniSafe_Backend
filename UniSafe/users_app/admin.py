@@ -38,16 +38,22 @@ class CustomUserAdmin(BaseUserAdmin):
     verbose_name_plural = "Users"
 
     list_display = (
-        "id",
+        # "id",
         "email",
-        "is_superuser",
         "is_active",
+        "is_student",
+        "is_genderdesk",
+        "is_consultant",
+        "is_police",
+        # "is_superuser",
         "date_joined",
-        "last_login",
+        # "last_login",
     )
 
-    search_fields = ["email", "id"]
-    ordering = ("id",)
+    # search_fields = ["email", "id"]
+    # ordering = ("id",)
+    search_fields = ["email"]
+    ordering = ("date_joined",)
 
     def get_inline_instances(self, request, obj=None):
         if obj is not None:

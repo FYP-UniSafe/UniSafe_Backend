@@ -7,8 +7,6 @@ from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
-# from django.utils import timezone
-# from django.template.loader import render_to_string
 
 
 # Custom User Manager
@@ -63,7 +61,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = None
-    email = models.EmailField(unique=True)
+    email = models.EmailField(primary_key=True, unique=True)
     full_name = models.CharField(max_length=25, blank=False, unique=False)
     phone_number = models.CharField(max_length=15, blank=False)
     gender = models.CharField(max_length=6, blank=False)
