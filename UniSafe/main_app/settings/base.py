@@ -29,11 +29,9 @@ INSTALLED_APPS = [
     "reports_app",
     "statistics_app",
     "appointments_app",
-    "agora",
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
-    # "google-generativeai",
 ]
 
 
