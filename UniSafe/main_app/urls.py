@@ -11,5 +11,4 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("users/", include("users_app.urls")),
     path('reports/', include('reports_app.urls')),
-    path('agora/', include('agora.urls')),
 ]
