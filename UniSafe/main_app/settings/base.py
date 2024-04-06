@@ -8,10 +8,14 @@ load_dotenv()
 
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir)))
+)
 
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+
+# ALLOWED_HOSTS = ["*"]
 
 
 INSTALLED_APPS = [
@@ -23,9 +27,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "users_app",
     "reports_app",
+    "statistics_app",
+    "appointments_app",
+    "agora",
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    # "google-generativeai",
 ]
 
 
@@ -103,6 +111,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
 }
 
 
@@ -120,7 +131,8 @@ SIMPLE_JWT = {
     "LEEWAY": 0,
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
+    # "USER_ID_FIELD": "id",
+    "USER_ID_FIELD": "email",
     "USER_ID_CLAIM": "user_id",
     "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
