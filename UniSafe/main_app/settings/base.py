@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
 
 
 INSTALLED_APPS = [
@@ -28,9 +28,12 @@ INSTALLED_APPS = [
     "users_app",
     "reports_app",
     "statistics_app",
+    "appointments_app",
+    "agora",
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    # "google-generativeai",
 ]
 
 
@@ -107,6 +110,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
     ),
 }
 

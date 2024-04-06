@@ -3,3 +3,6 @@
 
 2. Need for custom_id to represent user profiles, they won't be necessarily PK (DONE)
 but they'll be used to link modules and identify the users associated with them.
+
+3. Add phone number for GenderDesk, Consultant, Police so as to enable the users 
+communicate  with them directly if needed.

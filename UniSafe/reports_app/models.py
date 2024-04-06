@@ -55,9 +55,6 @@ class Report(models.Model):
     assigned_officer = models.ForeignKey(
         Police, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
     )
-    # assigned_officer = models.ForeignKey(
-    #     Police, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
-    # )
 
     def save(self, *args, **kwargs):
         if not self.pk:
