@@ -58,6 +58,7 @@ class StudentProfile(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ["reg_no", "custom_id", "college", "report_count"]
+        ref_name = 'StudentProfile'
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
@@ -78,6 +79,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "last_login",
             "profile",
         ]
+        ref_name = 'StudentProfileSerializer'
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile")
@@ -143,6 +145,7 @@ class GenderDeskProfile(serializers.ModelSerializer):
     class Meta:
         model = GenderDesk
         fields = ["staff_no", "custom_id", "office", "report_count"]
+        ref_name = 'GenderDeskProfile'
 
 
 class GenderDeskProfileSerializer(serializers.ModelSerializer):
@@ -163,6 +166,7 @@ class GenderDeskProfileSerializer(serializers.ModelSerializer):
             "last_login",
             "profile",
         ]
+        ref_name = 'GenderDeskProfileSerializer'
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile")
@@ -225,6 +229,7 @@ class ConsultantProfile(serializers.ModelSerializer):
     class Meta:
         model = Consultant
         fields = ["staff_no", "custom_id", "office", "session_count"]
+        ref_name = 'ConsultantProfile'
 
 
 class ConsultantProfileSerializer(serializers.ModelSerializer):
@@ -245,6 +250,7 @@ class ConsultantProfileSerializer(serializers.ModelSerializer):
             "last_login",
             "profile",
         ]
+        ref_name = 'ConsultantProfileSerializer'
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile")
@@ -307,6 +313,7 @@ class PoliceProfile(serializers.ModelSerializer):
     class Meta:
         model = Police
         fields = ["police_no", "custom_id", "station", "report_count"]
+        ref_name = 'PoliceProfile'
 
 
 class PoliceProfileSerializer(serializers.ModelSerializer):
@@ -327,6 +334,7 @@ class PoliceProfileSerializer(serializers.ModelSerializer):
             "last_login",
             "profile",
         ]
+        ref_name = 'PoliceProfileSerializer'
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile")
