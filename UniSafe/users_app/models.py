@@ -6,7 +6,7 @@ import random
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
-
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Custom User Manager
@@ -214,6 +214,71 @@ def create_otp_and_send_email(sender, instance, created, **kwargs):
         )
         email.attach_alternative(html_message, "text/html")
         email.send()
+
+
+def resend_otp(email):
+    try:
+        user = User.objects.get(email=email)
+    except ObjectDoesNotExist:
+        return {"error": "Email does not exist. Please sign up."}
+
+    # Check if OTP already exists
+    try:
+        otp = OTP.objects.get(user=user)
+        otp.otp = random.randint(100000, 999999)
+        otp.save()
+    except OTP.DoesNotExist:
+        otp = OTP.objects.create(user=user)
+
+    # Send OTP via email
+    subject = "Your UniSafe OTP resend Request"
+    html_message = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                line-height: 30px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                background-color: #efe4ff;
+                align-items: flex-start;
+                padding-left: 5vw;
+            }}
+            body b {{
+                color: #362555;
+            }}
+            .otp {{
+                color: #362555;
+            }}
+        </style>
+    </head>
+    <body>
+        <p>Hi {instance.full_name},<br>Thank you for joining <b>UniSafe.</b><br>Your OTP resend request was received, use the OTP below:</p>
+            <h1 class="otp">{otp.otp}</h1>
+            <p>This OTP expires in 10 minutes.</p>
+            <p style="color: #362555;">Regards,<br>UniSafe Team</p>
+            <p style="font-size: 15px;"><small>If you did not request this, please ignore this email.</small></p>
+    </body>
+    </html>
+    """.format(
+        instance=user, otp=otp
+    )
+
+    send_mail(
+        subject,
+        strip_tags(html_message),
+        "unisafe.reports@gmail.com",
+        [user.email],
+        html_message=html_message,
+    )
+
+    return {"message": "OTP resent successfully."}
 
 
 class Student(models.Model):
