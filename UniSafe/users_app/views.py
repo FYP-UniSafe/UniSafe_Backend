@@ -1,4 +1,4 @@
-from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -219,6 +219,21 @@ class VerifyOTPView(GenericAPIView):
             )
 
 
+class ResendOTPView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = ResendOTPSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get("email")
+            result = resend_otp(email)
+
+            if "error" in result:
+                return Response(result, status=404)
+            else:
+                return Response(result, status=200)
+        return Response(serializer.errors, status=400)
+
+
+
 class LoginView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
@@ -355,3 +370,17 @@ class ChangePasswordView(GenericAPIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class UserDetailsView(RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+    

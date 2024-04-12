@@ -463,3 +463,8 @@ class ResetPasswordSerializer(serializers.Serializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+# RESEND OTP
+class ResendOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
