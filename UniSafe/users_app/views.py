@@ -9,6 +9,7 @@ from .models import *
 from django.utils import timezone
 from datetime import timedelta
 from rest_framework.exceptions import AuthenticationFailed
+from django.http import JsonResponse
 
 
 class StudentSignupView(GenericAPIView):
@@ -234,12 +235,29 @@ class ResendOTPView(APIView):
 
 
 
-class LoginView(GenericAPIView):
+# class LoginView(GenericAPIView):
+#     permission_classes = (AllowAny,)
+#     serializer_class = LoginSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+
+#         user = serializer.validated_data
+#         refresh = RefreshToken.for_user(user)
+#         user.last_login = timezone.now()
+#         user.save()
+
+#         data = UserSerializer(user).data
+#         data["tokens"] = {"refresh": str(refresh), "access": str(refresh.access_token)}
+
+#         return Response(data, status=status.HTTP_200_OK)
+class LoginView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data
@@ -247,31 +265,64 @@ class LoginView(GenericAPIView):
         user.last_login = timezone.now()
         user.save()
 
-        data = UserSerializer(user).data
-        data["tokens"] = {"refresh": str(refresh), "access": str(refresh.access_token)}
+        user_serializer = UserSerializer(user)
 
-        return Response(data, status=status.HTTP_200_OK)
+        data = user_serializer.data
+        data["tokens"] = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
 
+        response = Response(data, status=status.HTTP_200_OK)
+        response.set_cookie('refresh_token', str(refresh), httponly=True)
+        response.set_cookie('access_token', str(refresh.access_token), httponly=True)
+        return response
+
+
+# class LogoutView(GenericAPIView):
+#     permission_classes = (IsAuthenticated,)
+#     serializer_class = LogoutSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+
+#         refresh_token = serializer.validated_data["refresh"]
+
+#         try:
+
+#             RefreshToken(refresh_token).blacklist()
+#             return Response(
+#                 {"detail": "Successfully logged out."}, status=status.HTTP_200_OK
+#             )
+#         except TokenError as e:
+
+#             raise AuthenticationFailed("Invalid or expired refresh token")
 
 class LogoutView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = LogoutSerializer
 
     def post(self, request, *args, **kwargs):
+        # Delete session cookie
+        response = JsonResponse({'detail': 'Successfully logged out.'})
+        response.delete_cookie('sessionid')
+
+        # Handle refresh token if needed
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if serializer.is_valid():
+            refresh_token = serializer.validated_data.get("refresh")
 
-        refresh_token = serializer.validated_data["refresh"]
+            if refresh_token:
+                try:
+                    RefreshToken(refresh_token).blacklist()
+                    return response
+                except TokenError as e:
+                    raise AuthenticationFailed("Invalid or expired refresh token")
 
-        try:
+        return response
 
-            RefreshToken(refresh_token).blacklist()
-            return Response(
-                {"detail": "Successfully logged out."}, status=status.HTTP_200_OK
-            )
-        except TokenError as e:
 
-            raise AuthenticationFailed("Invalid or expired refresh token")
 
 
 class ForgotPasswordView(GenericAPIView):
