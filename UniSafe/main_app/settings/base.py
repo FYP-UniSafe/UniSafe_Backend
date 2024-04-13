@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
-    "drf_yasg"
+    "drf_yasg",
 ]
 
 
@@ -146,7 +146,6 @@ SIMPLE_JWT = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-
 
 
 AUTH_USER_MODEL = "users_app.User"

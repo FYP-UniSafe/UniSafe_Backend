@@ -1,4 +1,8 @@
-from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView, RetrieveAPIView
+from rest_framework.generics import (
+    GenericAPIView,
+    RetrieveUpdateAPIView,
+    RetrieveAPIView,
+)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -199,7 +203,7 @@ class VerifyOTPView(GenericAPIView):
             return Response(
                 {"message": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         try:
             otp_obj = OTP.objects.get(user=user)
         except OTP.DoesNotExist:
@@ -227,6 +231,15 @@ class ResendOTPView(APIView):
         serializer = ResendOTPSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data.get("email")
+
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return Response(
+                    {"message": "User does not exist"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             result = resend_otp(email)
 
             if "error" in result:
@@ -234,7 +247,6 @@ class ResendOTPView(APIView):
             else:
                 return Response(result, status=200)
         return Response(serializer.errors, status=400)
-
 
 
 class LoginView(APIView):
@@ -259,8 +271,8 @@ class LoginView(APIView):
         }
 
         response = Response(data, status=status.HTTP_200_OK)
-        response.set_cookie('refresh_token', str(refresh), httponly=True)
-        response.set_cookie('access_token', str(refresh.access_token), httponly=True)
+        response.set_cookie("refresh_token", str(refresh), httponly=True)
+        response.set_cookie("access_token", str(refresh.access_token), httponly=True)
         return response
 
 
@@ -271,17 +283,21 @@ class LogoutView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
-        refresh_token = serializer.validated_data.get('refresh')
+
+        refresh_token = serializer.validated_data.get("refresh")
 
         try:
             RefreshToken(refresh_token).blacklist()
-            response = Response({'detail': 'Successfully logged out.'}, status=status.HTTP_200_OK)
-            response.delete_cookie('sessionid')
+            response = Response(
+                {"detail": "Successfully logged out."}, status=status.HTTP_200_OK
+            )
+            response.delete_cookie("sessionid")
             return response
         except Exception as e:
-            return Response({'detail': 'Invalid or expired refresh token.'}, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response(
+                {"detail": "Invalid or expired refresh token."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class ForgotPasswordView(GenericAPIView):
@@ -393,4 +409,3 @@ class UserDetailsView(RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
-    
