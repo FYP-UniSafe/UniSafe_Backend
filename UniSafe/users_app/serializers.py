@@ -468,3 +468,4 @@ class ChangePasswordSerializer(serializers.Serializer):
 # RESEND OTP
 class ResendOTPSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+    

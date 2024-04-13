@@ -195,11 +195,13 @@ class VerifyOTPView(GenericAPIView):
 
         try:
             user = User.objects.get(email=email)
-            otp_obj = OTP.objects.get(user=user)
         except User.DoesNotExist:
             return Response(
                 {"message": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST
             )
+        
+        try:
+            otp_obj = OTP.objects.get(user=user)
         except OTP.DoesNotExist:
             return Response(
                 {"message": "OTP does not exist"}, status=status.HTTP_400_BAD_REQUEST
@@ -235,23 +237,6 @@ class ResendOTPView(APIView):
 
 
 
-# class LoginView(GenericAPIView):
-#     permission_classes = (AllowAny,)
-#     serializer_class = LoginSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-
-#         user = serializer.validated_data
-#         refresh = RefreshToken.for_user(user)
-#         user.last_login = timezone.now()
-#         user.save()
-
-#         data = UserSerializer(user).data
-#         data["tokens"] = {"refresh": str(refresh), "access": str(refresh.access_token)}
-
-#         return Response(data, status=status.HTTP_200_OK)
 class LoginView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
@@ -279,48 +264,6 @@ class LoginView(APIView):
         return response
 
 
-# class LogoutView(GenericAPIView):
-#     permission_classes = (IsAuthenticated,)
-#     serializer_class = LogoutSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-
-#         refresh_token = serializer.validated_data["refresh"]
-
-#         try:
-
-#             RefreshToken(refresh_token).blacklist()
-#             return Response(
-#                 {"detail": "Successfully logged out."}, status=status.HTTP_200_OK
-#             )
-#         except TokenError as e:
-
-#             raise AuthenticationFailed("Invalid or expired refresh token")
-
-# class LogoutView(GenericAPIView):
-#     permission_classes = (IsAuthenticated,)
-#     serializer_class = LogoutSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         # Delete session cookie
-#         response = JsonResponse({'detail': 'Successfully logged out.'})
-#         response.delete_cookie('sessionid')
-
-#         # Handle refresh token if needed
-#         serializer = self.get_serializer(data=request.data)
-#         if serializer.is_valid():
-#             refresh_token = serializer.validated_data.get("refresh")
-
-#             if refresh_token:
-#                 try:
-#                     RefreshToken(refresh_token).blacklist()
-#                     return response
-#                 except TokenError as e:
-#                     raise AuthenticationFailed("Invalid or expired refresh token")
-
-#         return response
 class LogoutView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = LogoutSerializer
