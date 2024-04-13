@@ -299,29 +299,45 @@ class LoginView(APIView):
 
 #             raise AuthenticationFailed("Invalid or expired refresh token")
 
+# class LogoutView(GenericAPIView):
+#     permission_classes = (IsAuthenticated,)
+#     serializer_class = LogoutSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         # Delete session cookie
+#         response = JsonResponse({'detail': 'Successfully logged out.'})
+#         response.delete_cookie('sessionid')
+
+#         # Handle refresh token if needed
+#         serializer = self.get_serializer(data=request.data)
+#         if serializer.is_valid():
+#             refresh_token = serializer.validated_data.get("refresh")
+
+#             if refresh_token:
+#                 try:
+#                     RefreshToken(refresh_token).blacklist()
+#                     return response
+#                 except TokenError as e:
+#                     raise AuthenticationFailed("Invalid or expired refresh token")
+
+#         return response
 class LogoutView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = LogoutSerializer
 
     def post(self, request, *args, **kwargs):
-        # Delete session cookie
-        response = JsonResponse({'detail': 'Successfully logged out.'})
-        response.delete_cookie('sessionid')
-
-        # Handle refresh token if needed
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            refresh_token = serializer.validated_data.get("refresh")
+        serializer.is_valid(raise_exception=True)
+        
+        refresh_token = serializer.validated_data.get('refresh')
 
-            if refresh_token:
-                try:
-                    RefreshToken(refresh_token).blacklist()
-                    return response
-                except TokenError as e:
-                    raise AuthenticationFailed("Invalid or expired refresh token")
-
-        return response
-
+        try:
+            RefreshToken(refresh_token).blacklist()
+            response = Response({'detail': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+            response.delete_cookie('sessionid')
+            return response
+        except Exception as e:
+            return Response({'detail': 'Invalid or expired refresh token.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
