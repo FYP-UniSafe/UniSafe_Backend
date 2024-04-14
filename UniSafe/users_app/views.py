@@ -324,7 +324,7 @@ class ForgotPasswordView(APIView):
         user.send_password_reset_email()
 
         return Response(
-            {"detail": "Password reset instructions sent to your email."},
+            {"detail": "Password reset instructions were sent to your email."},
             status=status.HTTP_200_OK,
         )
 
@@ -366,8 +366,8 @@ class ResetPasswordView(GenericAPIView):
         # Serialize the response data
         response_data = {
             "detail": "Password reset successfully.",
-            "access": access_token,
-            "refresh": str(refresh),
+            # "access": access_token,
+            # "refresh": str(refresh),
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
