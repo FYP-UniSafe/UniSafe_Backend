@@ -1,4 +1,4 @@
-from rest_framework.generics import (GenericAPIView)
+from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,8 +8,6 @@ from .serializers import *
 from .models import *
 from django.utils import timezone
 from datetime import timedelta
-
-
 
 
 class StudentSignupView(GenericAPIView):
@@ -292,9 +290,12 @@ class LogoutView(GenericAPIView):
 
         try:
             RefreshToken(refresh_token).blacklist()
+
             response = Response(
                 {"detail": "Successfully logged out."}, status=status.HTTP_200_OK
             )
+            response.delete_cookie("refresh_token")
+            response.delete_cookie("access_token")
             response.delete_cookie("sessionid")
             return response
         except Exception as e:
@@ -353,19 +354,15 @@ class ResetPasswordView(GenericAPIView):
                 {"detail": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Update password
         user.set_password(new_password)
         user.save()
 
-        # Generate new tokens
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
+        # # Generate new tokens
+        # refresh = RefreshToken.for_user(user)
+        # access_token = str(refresh.access_token)
 
-        # Serialize the response data
         response_data = {
             "detail": "Password reset successfully.",
-            # "access": access_token,
-            # "refresh": str(refresh),
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
