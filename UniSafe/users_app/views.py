@@ -304,7 +304,7 @@ class LogoutView(GenericAPIView):
             )
 
 
-class ForgotPasswordView(APIView):
+class ForgotPasswordView(GenericAPIView):
     serializer_class = ForgotPasswordSerializer
 
     def post(self, request):
@@ -312,19 +312,17 @@ class ForgotPasswordView(APIView):
         serializer.is_valid(raise_exception=True)
 
         email = serializer.validated_data["email"]
-        
         try:
             user = User.objects.get(email=email)
+            user.send_password_reset_email()
         except User.DoesNotExist:
             return Response(
                 {"detail": "User with this email does not exist."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        user.send_password_reset_email()
-
         return Response(
-            {"detail": "Password reset instructions were sent to your email."},
+            {"detail": "OTP was sent to your email."},
             status=status.HTTP_200_OK,
         )
 
