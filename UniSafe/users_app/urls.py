@@ -15,10 +15,10 @@ urlpatterns = [
     path("token/refresh", TokenRefreshView.as_view(), name="token-refresh"),
 
     #RETRIEVE PROFILE DETAILS
-    path("profile/student", StudentProfileView.as_view(), name="student-profile"),
-    path("profile/genderdesk", GenderDeskProfileView.as_view(), name="genderdesk-profile"),
-    path("profile/police", PoliceProfileView.as_view(), name="police-profile"),
-    path("profile/consultant", ConsultantProfileView.as_view(), name="consultant-profile"),
+    path("student/profile", StudentProfileView.as_view(), name="student-profile"),
+    path("genderdesk/profile", GenderDeskProfileView.as_view(), name="genderdesk-profile"),
+    path("police/profile", PoliceProfileView.as_view(), name="police-profile"),
+    path("consultant/profile", ConsultantProfileView.as_view(), name="consultant-profile"),
 
 
     # path("student/update", StudentProfileView.as_view(), name="student-update"),
@@ -32,7 +32,7 @@ urlpatterns = [
 
     # path("police/update", PoliceProfileView.as_view(), name="police-update"),
     path("police/profile/update", PoliceProfileUpdateView.as_view(), name="police-profile-update",),
-    
+
     path("password/change", ChangePasswordView.as_view(), name="change-password"),
     path("password/forgot", ForgotPasswordView.as_view(), name="forgot-password"),
     path("password/reset", ResetPasswordView.as_view(), name="reset-password"),
