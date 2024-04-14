@@ -1,19 +1,15 @@
-from rest_framework.generics import (
-    GenericAPIView,
-    RetrieveUpdateAPIView,
-    RetrieveAPIView,
-)
+from rest_framework.generics import (GenericAPIView)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import *
 from .models import *
 from django.utils import timezone
 from datetime import timedelta
-from rest_framework.exceptions import AuthenticationFailed
-from django.http import JsonResponse
+
+
 
 
 class StudentSignupView(GenericAPIView):
@@ -32,12 +28,14 @@ class StudentSignupView(GenericAPIView):
         return Response(data, status=status.HTTP_201_CREATED)
 
 
-class StudentProfileView(RetrieveUpdateAPIView):
+class StudentProfileView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = StudentProfileSerializer
 
-    def get_object(self):
-        return self.request.user
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class StudentProfileUpdateView(APIView):
@@ -75,12 +73,14 @@ class GenderDeskSignupView(GenericAPIView):
         return Response(data, status=status.HTTP_201_CREATED)
 
 
-class GenderDeskProfileView(RetrieveUpdateAPIView):
+class GenderDeskProfileView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = GenderDeskProfileSerializer
 
-    def get_object(self):
-        return self.request.user
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GenderDeskProfileUpdateView(APIView):
@@ -118,12 +118,14 @@ class ConsultantSignupView(GenericAPIView):
         return Response(data, status=status.HTTP_201_CREATED)
 
 
-class ConsultantProfileView(RetrieveUpdateAPIView):
+class ConsultantProfileView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ConsultantProfileSerializer
 
-    def get_object(self):
-        return self.request.user
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ConsultantProfileUpdateView(APIView):
@@ -161,12 +163,14 @@ class PoliceSignupView(GenericAPIView):
         return Response(data, status=status.HTTP_201_CREATED)
 
 
-class PoliceProfileView(RetrieveUpdateAPIView):
+class PoliceProfileView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PoliceProfileSerializer
 
-    def get_object(self):
-        return self.request.user
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class PoliceProfileUpdateView(APIView):
@@ -398,14 +402,14 @@ class ChangePasswordView(GenericAPIView):
         )
 
 
-class UserDetailsView(RetrieveAPIView):
+class UserDetailsView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
 
     def get_object(self):
         return self.request.user
 
-    def retrieve(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        serializer = self.serializer_class(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
