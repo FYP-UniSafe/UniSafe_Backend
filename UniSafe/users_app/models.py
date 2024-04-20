@@ -22,6 +22,7 @@ class UserManager(BaseUserManager):
 
     def create_student(self, email, password=None, **extra_fields):
         user = self.create_user(email, password, **extra_fields)
+
         user.is_student = True
         user.save(using=self._db)
         user.save()
