@@ -103,8 +103,6 @@ class StudentProfileUpdateSerializer(serializers.Serializer):
     college = serializers.CharField()
 
     def update(self, instance, validated_data):
-        instance.email = validated_data.get("email", instance.email)
-        instance.phone_number = validated_data.get("phone_number", instance.phone_number)
         instance.college = validated_data.get("college", instance.college)
         instance.save()
         return instance
