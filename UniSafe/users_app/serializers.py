@@ -52,6 +52,14 @@ class UserSerializer(serializers.ModelSerializer):
 
         return data
 
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get("email", instance.email)
+        instance.phone_number = validated_data.get(
+            "phone_number", instance.phone_number
+        )
+        instance.save()
+        return instance
+
 
 # STUDENT SERIALIZERS
 class StudentProfile(serializers.ModelSerializer):
@@ -87,21 +95,16 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         Student.objects.create(user=student, **profile_data)
         return student
 
-    def update(self, instance, validated_data):
-        # profile_data = validated_data.pop('profile', {})
-        instance.full_name = validated_data.get("full_name", instance.full_name)
-        instance.email = validated_data.get("email", instance.email)
-        instance.phone_number = validated_data.get(
-            "phone_number", instance.phone_number
-        )
-        instance.save()
-        return instance
 
 
 class StudentProfileUpdateSerializer(serializers.Serializer):
     college = serializers.CharField()
+    phone_number = serializers.CharField(required=False)
+    college = serializers.CharField()
 
     def update(self, instance, validated_data):
+        instance.email = validated_data.get("email", instance.email)
+        instance.phone_number = validated_data.get("phone_number", instance.phone_number)
         instance.college = validated_data.get("college", instance.college)
         instance.save()
         return instance
@@ -173,16 +176,6 @@ class GenderDeskProfileSerializer(serializers.ModelSerializer):
         gender_desk = User.objects.create(**validated_data)
         User.objects.create(user=gender_desk, **profile_data)
         return gender_desk
-
-    def update(self, instance, validated_data):
-        # profile_data = validated_data.pop('profile', {})
-        instance.full_name = validated_data.get("full_name", instance.full_name)
-        instance.email = validated_data.get("email", instance.email)
-        instance.phone_number = validated_data.get(
-            "phone_number", instance.phone_number
-        )
-        instance.save()
-        return instance
 
 
 class GenderDeskProfileUpdateSerializer(serializers.Serializer):
@@ -258,16 +251,6 @@ class ConsultantProfileSerializer(serializers.ModelSerializer):
         User.objects.create(user=consultant, **profile_data)
         return consultant
 
-    def update(self, instance, validated_data):
-        # profile_data = validated_data.pop('profile', {})
-        instance.full_name = validated_data.get("full_name", instance.full_name)
-        instance.email = validated_data.get("email", instance.email)
-        instance.phone_number = validated_data.get(
-            "phone_number", instance.phone_number
-        )
-        instance.save()
-        return instance
-
 
 class ConsultantProfileUpdateSerializer(serializers.Serializer):
     office = serializers.CharField()
@@ -341,16 +324,6 @@ class PoliceProfileSerializer(serializers.ModelSerializer):
         police = User.objects.create(**validated_data)
         User.objects.create(user=police, **profile_data)
         return police
-
-    def update(self, instance, validated_data):
-        # profile_data = validated_data.pop('profile', {})
-        instance.full_name = validated_data.get("full_name", instance.full_name)
-        instance.email = validated_data.get("email", instance.email)
-        instance.phone_number = validated_data.get(
-            "phone_number", instance.phone_number
-        )
-        instance.save()
-        return instance
 
 
 class PoliceProfileUpdateSerializer(serializers.Serializer):
