@@ -35,6 +35,16 @@ class CreateReportView(generics.CreateAPIView):
         serializer_data = serializer.validated_data
         serializer_data.update(reporter_data)
 
+        if serializer_data.get("report_for") == "Self":
+            serializer_data.update({
+                "victim_email": user.email,
+                "victim_full_name": user.full_name,
+                "victim_phone": user.phone_number,
+                "victim_gender": user.gender,
+                "victim_reg_no": profile.reg_no,
+                "victim_college": profile.college,
+            })
+
         serializer.save(**serializer_data)
 
         profile.report_count += 1
