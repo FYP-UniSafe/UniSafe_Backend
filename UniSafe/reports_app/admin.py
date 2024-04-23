@@ -60,7 +60,7 @@ class ReportAdmin(admin.ModelAdmin):
                     "date_and_time",
                     "location",
                     "description",
-                    "evidence",
+                    # "evidence",
                 )
             },
         ),
@@ -91,7 +91,7 @@ class ReportAdmin(admin.ModelAdmin):
         "date_and_time",
         "location",
         "description",
-        "evidence",
+        # "evidence",
         "perpetrator_fullname",
         "perpetrator_gender",
         "relationship",

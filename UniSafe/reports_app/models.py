@@ -43,7 +43,7 @@ class Report(models.Model):
     date_and_time = models.DateTimeField()
     location = models.TextField(max_length=20)
     description = models.TextField()
-    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
+    # evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
 
     # Perpetrator Details
     perpetrator_fullname = models.TextField(max_length=20)
@@ -77,7 +77,7 @@ class AnonymousReport(models.Model):
     date_and_time = models.DateTimeField()
     location = models.TextField(max_length=20)
     description = models.TextField()
-    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
+    # evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
 
     # Perpetrator Details
     perpetrator_fullname = models.TextField(max_length=20)
@@ -95,3 +95,22 @@ class AnonymousReport(models.Model):
             total_reports = AnonymousReport.objects.count() + 1
             self.report_id = f"AR{total_reports}"
         super().save(*args, **kwargs)
+
+
+
+
+"""
+    anon = AnonymousReport.objects.create(jjhj)
+    AnonymousEvidence.objects.create(report=anon, evi=llggl)
+    AnonymousEvidence.objects.create(report=anon, evi=llggl)
+    loop
+"""
+
+class Evidence(models.Model):
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, related_name='report_evidence')
+    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
+
+
+class AnonymousEvidence(models.Model):
+    report = models.ForeignKey(AnonymousReport, on_delete=models.CASCADE, blank=True, related_name='anonymous_evidence')
+    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
