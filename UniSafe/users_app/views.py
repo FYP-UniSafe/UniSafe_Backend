@@ -251,6 +251,32 @@ class ResendOTPView(APIView):
         return Response(serializer.errors, status=400)
 
 
+# class LoginView(APIView):
+#     permission_classes = (AllowAny,)
+#     serializer_class = LoginSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.serializer_class(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+
+#         user = serializer.validated_data
+#         refresh = RefreshToken.for_user(user)
+#         user.last_login = timezone.now()
+#         user.save()
+
+#         user_serializer = UserSerializer(user)
+
+#         data = user_serializer.data
+#         data["tokens"] = {
+#             "refresh": str(refresh),
+#             "access": str(refresh.access_token),
+#         }
+
+
+#         response = Response(data, status=status.HTTP_200_OK)
+#         response.set_cookie("refresh_token", str(refresh), httponly=True)
+#         response.set_cookie("access_token", str(refresh.access_token), httponly=True)
+#         return response
 class LoginView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
@@ -264,12 +290,27 @@ class LoginView(APIView):
         user.last_login = timezone.now()
         user.save()
 
-        user_serializer = UserSerializer(user)
+        # Select profile serializer based on user type
+        if user.is_student:
+            profile_serializer = StudentProfileSerializer
+        elif user.is_genderdesk:
+            profile_serializer = GenderDeskProfileSerializer
+        elif user.is_consultant:
+            profile_serializer = ConsultantProfileSerializer
+        elif user.is_police:
+            profile_serializer = PoliceProfileSerializer
+        else:
+            # Default to UserSerializer if user type is not recognized
+            profile_serializer = UserSerializer
 
-        data = user_serializer.data
-        data["tokens"] = {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
+        profile_data = profile_serializer(user).data
+
+        data = {
+            "user": profile_data,
+            "tokens": {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            },
         }
 
         response = Response(data, status=status.HTTP_200_OK)

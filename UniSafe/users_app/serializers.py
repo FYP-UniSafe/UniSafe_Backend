@@ -96,7 +96,6 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         return student
 
 
-
 class StudentProfileUpdateSerializer(serializers.Serializer):
     college = serializers.CharField()
     phone_number = serializers.CharField(required=False)
