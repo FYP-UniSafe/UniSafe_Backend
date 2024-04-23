@@ -13,7 +13,6 @@ class CreateReportView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         profile = user.profile
-        # student_instance, _ = Student.objects.get_or_create(user=user)
 
         if not user.is_student:
             return Response(
@@ -22,7 +21,6 @@ class CreateReportView(generics.CreateAPIView):
             )
 
         reporter_data = {
-            # "reporter": student_instance,
             "reporter": profile,
             "reporter_full_name": user.full_name,
             "reporter_gender": user.gender,
@@ -36,17 +34,30 @@ class CreateReportView(generics.CreateAPIView):
         serializer_data.update(reporter_data)
 
         if serializer_data.get("report_for") == "Self":
-            serializer_data.update({
-                "victim_email": user.email,
-                "victim_full_name": user.full_name,
-                "victim_phone": user.phone_number,
-                "victim_gender": user.gender,
-                "victim_reg_no": profile.reg_no,
-                "victim_college": profile.college,
-            })
+            serializer_data.update(
+                {
+                    "victim_email": user.email,
+                    "victim_full_name": user.full_name,
+                    "victim_phone": user.phone_number,
+                    "victim_gender": user.gender,
+                    "victim_reg_no": profile.reg_no,
+                    "victim_college": profile.college,
+                }
+            )
 
-        serializer.save(**serializer_data)
+        # Save the report
+        report_instance = serializer.save(**serializer_data)
 
+        # Get the evidence data from the request
+        evidence_data = self.request.FILES.getlist("evidence")
+
+        # Create evidence objects for each evidence sent
+        for evidence_file in evidence_data:
+            models.Evidence.objects.create(
+                report=report_instance, evidence=evidence_file
+            )
+
+        # Update profile report count
         profile.report_count += 1
         profile.save()
 
