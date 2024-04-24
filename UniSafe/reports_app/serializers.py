@@ -61,6 +61,18 @@ class CreateReportSerializer(serializers.ModelSerializer):
             data["victim_gender"] = user.gender
             data["victim_reg_no"] = profile.reg_no
             data["victim_college"] = profile.college
+        elif report_for == "Else":
+            victim_fields = [
+                "victim_email",
+                "victim_full_name",
+                "victim_phone",
+                "victim_gender",
+                "victim_reg_no",
+                "victim_college",
+            ]
+            for field in victim_fields:
+                if not data.get(field):
+                    missing_fields.append(field)
 
         for field in required_fields:
             if not data.get(field):
