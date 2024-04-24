@@ -12,27 +12,26 @@ class CreateReportView(generics.CreateAPIView):
     serializer_class = CreateReportSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
+        # Check if the user is a student
         user = request.user
-        profile = user.profile
-
         if not user.is_student:
             return Response(
                 {"error": "Only students are allowed to create reports"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         try:
             report_instance = serializer.save(
-                reporter=profile,
+                reporter=user.profile,
                 reporter_full_name=user.full_name,
                 reporter_gender=user.gender,
                 reporter_email=user.email,
                 reporter_phone=user.phone_number,
-                reporter_college=profile.college,
-                reporter_reg_no=profile.reg_no,
+                reporter_college=user.profile.college,
+                reporter_reg_no=user.profile.reg_no,
             )
 
             # Get the evidence data from the request
@@ -44,8 +43,8 @@ class CreateReportView(generics.CreateAPIView):
                     report=report_instance, evidence=evidence_file
                 )
 
-            profile.report_count += 1
-            profile.save()
+            user.profile.report_count += 1
+            user.profile.save()
 
             report_serializer = CreateReportSerializer(report_instance)
 
