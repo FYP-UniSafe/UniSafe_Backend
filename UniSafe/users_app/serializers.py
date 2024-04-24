@@ -99,7 +99,6 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 class StudentProfileUpdateSerializer(serializers.Serializer):
     college = serializers.CharField()
     phone_number = serializers.CharField(required=False)
-    college = serializers.CharField()
 
     def update(self, instance, validated_data):
         instance.college = validated_data.get("college", instance.college)

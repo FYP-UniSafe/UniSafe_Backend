@@ -251,32 +251,7 @@ class ResendOTPView(APIView):
         return Response(serializer.errors, status=400)
 
 
-# class LoginView(APIView):
-#     permission_classes = (AllowAny,)
-#     serializer_class = LoginSerializer
 
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.serializer_class(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-
-#         user = serializer.validated_data
-#         refresh = RefreshToken.for_user(user)
-#         user.last_login = timezone.now()
-#         user.save()
-
-#         user_serializer = UserSerializer(user)
-
-#         data = user_serializer.data
-#         data["tokens"] = {
-#             "refresh": str(refresh),
-#             "access": str(refresh.access_token),
-#         }
-
-
-#         response = Response(data, status=status.HTTP_200_OK)
-#         response.set_cookie("refresh_token", str(refresh), httponly=True)
-#         response.set_cookie("access_token", str(refresh.access_token), httponly=True)
-#         return response
 class LoginView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer

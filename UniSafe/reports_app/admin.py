@@ -1,5 +1,27 @@
 from django.contrib import admin
-from .models import Report
+from .models import Report, AnonymousReport, Evidence, AnonymousEvidence
+
+
+class EvidenceInline(admin.TabularInline):
+    model = Evidence
+    extra = 1
+
+
+class AnonymousEvidenceInline(admin.TabularInline):
+    model = AnonymousEvidence
+    extra = 1
+
+
+class EvidenceAdmin(admin.ModelAdmin):
+    list_display = ("id", "report", "evidence")
+    list_filter = ("report",)
+    search_fields = ["report_id", "report__report_id", "evidence"]
+
+
+class AnonymousEvidenceAdmin(admin.ModelAdmin):
+    list_display = ("id", "report", "evidence")
+    list_filter = ("report",)
+    search_fields = ["report_id", "report__report_id", "evidence"]
 
 
 class ReportAdmin(admin.ModelAdmin):
@@ -18,6 +40,7 @@ class ReportAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "report_id",
+                    "created_on",
                     "status",
                     "assigned_gd",
                     "rejection_reason",
@@ -59,8 +82,8 @@ class ReportAdmin(admin.ModelAdmin):
                     "abuse_type",
                     "date_and_time",
                     "location",
+                    "other_location",
                     "description",
-                    # "evidence",
                 )
             },
         ),
@@ -72,6 +95,7 @@ class ReportAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         "report_id",
+        "created_on",
         "reporter",
         "rejection_reason",
         "assigned_gd",
@@ -90,8 +114,8 @@ class ReportAdmin(admin.ModelAdmin):
         "abuse_type",
         "date_and_time",
         "location",
+        "other_location",
         "description",
-        # "evidence",
         "perpetrator_fullname",
         "perpetrator_gender",
         "relationship",
@@ -99,6 +123,66 @@ class ReportAdmin(admin.ModelAdmin):
     )
 
     ordering = ("created_on",)
+    inlines = [EvidenceInline]
+
+
+class AnonymousReportAdmin(admin.ModelAdmin):
+    list_display = (
+        "report_id",
+        "status",
+        "abuse_type",
+        "created_on",
+        "assigned_gd",
+    )
+    fieldsets = (
+        (
+            "General Information",
+            {
+                "fields": (
+                    "report_id",
+                    "created_on",
+                    "status",
+                    "assigned_gd",
+                )
+            },
+        ),
+        (
+            "Abuse Information",
+            {
+                "fields": (
+                    "abuse_type",
+                    "date_and_time",
+                    "location",
+                    "other_location",
+                    "description",
+                )
+            },
+        ),
+        (
+            "Perpetrator Details",
+            {"fields": ("perpetrator_fullname", "perpetrator_gender", "relationship")},
+        ),
+        ("Police Status", {"fields": ("police_status", "assigned_officer")}),
+    )
+    readonly_fields = (
+        "report_id",
+        "created_on",
+        "assigned_gd",
+        "abuse_type",
+        "date_and_time",
+        "location",
+        "other_location",
+        "description",
+        "perpetrator_fullname",
+        "perpetrator_gender",
+        "relationship",
+    )
+
+    ordering = ("created_on",)
+    inlines = [AnonymousEvidenceInline]
 
 
 admin.site.register(Report, ReportAdmin)
+admin.site.register(AnonymousReport, AnonymousReportAdmin)
+admin.site.register(Evidence, EvidenceAdmin)
+admin.site.register(AnonymousEvidence, AnonymousEvidenceAdmin)
