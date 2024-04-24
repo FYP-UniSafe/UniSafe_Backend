@@ -3,6 +3,8 @@ from .views import *
 
 urlpatterns = [
     path("create", CreateReportView.as_view(), name="create-report"),
+    path('create/anonymous', CreateAnonymousReportView.as_view(), name='create_anonymous_report'),
+    
     path("accept", AcceptReportView.as_view(), name="accept-report"),
     path("reject", RejectReportView.as_view(), name="reject-report"),
     path("forward", ForwardReportView.as_view(), name="forward-report"),

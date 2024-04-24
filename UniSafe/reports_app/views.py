@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from .serializers import *
 from users_app.models import *
+from . import models
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
@@ -10,8 +11,11 @@ class CreateReportView(generics.CreateAPIView):
     queryset = Report.objects.all()
     serializer_class = CreateReportSerializer
 
-    def perform_create(self, serializer):
-        user = self.request.user
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
         profile = user.profile
 
         if not user.is_student:
@@ -20,51 +24,77 @@ class CreateReportView(generics.CreateAPIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        reporter_data = {
-            "reporter": profile,
-            "reporter_full_name": user.full_name,
-            "reporter_gender": user.gender,
-            "reporter_email": user.email,
-            "reporter_phone": user.phone_number,
-            "reporter_college": profile.college,
-            "reporter_reg_no": profile.reg_no,
-        }
-
-        serializer_data = serializer.validated_data
-        serializer_data.update(reporter_data)
-
-        if serializer_data.get("report_for") == "Self":
-            serializer_data.update(
-                {
-                    "victim_email": user.email,
-                    "victim_full_name": user.full_name,
-                    "victim_phone": user.phone_number,
-                    "victim_gender": user.gender,
-                    "victim_reg_no": profile.reg_no,
-                    "victim_college": profile.college,
-                }
+        try:
+            report_instance = serializer.save(
+                reporter=profile,
+                reporter_full_name=user.full_name,
+                reporter_gender=user.gender,
+                reporter_email=user.email,
+                reporter_phone=user.phone_number,
+                reporter_college=profile.college,
+                reporter_reg_no=profile.reg_no,
             )
 
-        # Save the report
-        report_instance = serializer.save(**serializer_data)
+            # Get the evidence data from the request
+            evidence_data = request.FILES.getlist("evidence")
+
+            # Create evidence objects for each evidence sent
+            for evidence_file in evidence_data:
+                models.Evidence.objects.create(
+                    report=report_instance, evidence=evidence_file
+                )
+
+            profile.report_count += 1
+            profile.save()
+
+            report_serializer = CreateReportSerializer(report_instance)
+
+            return Response(
+                {"message": "Report created", "report": report_serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        # Check if location is "Other"
+        location = self.request.data.get("location")
+        if location == "Other":
+            serializer.validated_data["other_location"] = self.request.data.get(
+                "other_location"
+            )
+
+        serializer.save()
+
+        # Remove other_location from validated data if it's not "Other"
+        if location != "Other" and "other_location" in serializer.validated_data:
+            del serializer.validated_data["other_location"]
+
+
+class CreateAnonymousReportView(generics.CreateAPIView):
+    serializer_class = CreateAnonymousReportSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        report_instance = serializer.save()
 
         # Get the evidence data from the request
-        evidence_data = self.request.FILES.getlist("evidence")
+        evidence_data = request.FILES.getlist("evidence")
 
-        # Create evidence objects for each evidence sent
         for evidence_file in evidence_data:
-            models.Evidence.objects.create(
+            models.AnonymousEvidence.objects.create(
                 report=report_instance, evidence=evidence_file
             )
 
-        # Update profile report count
-        profile.report_count += 1
-        profile.save()
-
-        headers = self.get_success_headers(serializer.data)
-
         return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+            {
+                "message": "Anonymous Report Created",
+                "report_id": report_instance.report_id,
+            },
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -467,3 +497,36 @@ class ForwardedReportsListView(generics.ListAPIView):
             return Report.objects.filter(police_status__in=["FORWARDED", "RECEIVED"])
         else:
             return Report.objects.none()
+
+
+# ANONYMOUS REPORT
+class CreateAnonymousReportView(generics.CreateAPIView):
+    queryset = AnonymousReport.objects.all()
+    serializer_class = CreateAnonymousReportSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            report_instance = serializer.save()
+
+            evidence_data = request.FILES.getlist("evidence")
+
+            for evidence_file in evidence_data:
+                models.AnonymousEvidence.objects.create(
+                    report=report_instance, evidence=evidence_file
+                )
+
+            report_serializer = CreateAnonymousReportSerializer(report_instance)
+
+            return Response(
+                {
+                    "message": "Anonymous report created",
+                    "report": report_serializer.data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
