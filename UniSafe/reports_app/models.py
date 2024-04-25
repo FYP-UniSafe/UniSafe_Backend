@@ -53,7 +53,7 @@ class Report(models.Model):
     victim_email = models.EmailField()
     victim_full_name = models.CharField(max_length=255)
     victim_phone = models.CharField(max_length=20)
-    victim_gender = models.CharField(max_length=6)
+    victim_gender = models.CharField(max_length=20)
     victim_reg_no = models.CharField(max_length=255)
     victim_college = models.CharField(max_length=255)
     # Description of the Abuse
