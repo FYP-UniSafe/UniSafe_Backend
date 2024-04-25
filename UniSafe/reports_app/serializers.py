@@ -8,6 +8,98 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+# class CreateReportSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Report
+#         fields = [
+#             "status",
+#             "report_for",
+#             "abuse_type",
+#             "date_and_time",
+#             "location",
+#             "other_location",  # Include other_location field
+#             "description",
+#             "perpetrator_fullname",
+#             "perpetrator_gender",
+#             "relationship",
+#             "victim_email",
+#             "victim_full_name",
+#             "victim_phone",
+#             "victim_gender",
+#             "victim_reg_no",
+#             "victim_college",
+#         ]
+#         extra_kwargs = {
+#             "victim_email": {"required": False},
+#             "victim_full_name": {"required": False},
+#             "victim_phone": {"required": False},
+#             "victim_gender": {"required": False},
+#             "victim_reg_no": {"required": False},
+#             "victim_college": {"required": False},
+#         }
+
+#     def validate(self, data):
+#         report_for = data.get("report_for")
+#         missing_fields = []
+
+#         # Required fields regardless of report_for
+#         required_fields = [
+#             "abuse_type",
+#             "date_and_time",
+#             "location",
+#             "description",
+#             "perpetrator_gender",
+#             "relationship",
+#         ]
+
+#         if report_for == "Self":
+#             user = self.context["request"].user
+#             profile = user.profile
+#             data["victim_email"] = user.email
+#             data["victim_full_name"] = user.full_name
+#             data["victim_phone"] = user.phone_number
+#             data["victim_gender"] = user.gender
+#             data["victim_reg_no"] = profile.reg_no
+#             data["victim_college"] = profile.college
+#         elif report_for == "Else":
+#             victim_fields = [
+#                 "victim_email",
+#                 "victim_full_name",
+#                 "victim_phone",
+#                 "victim_gender",
+#                 "victim_reg_no",
+#                 "victim_college",
+#             ]
+#             for field in victim_fields:
+#                 if not data.get(field):
+#                     missing_fields.append(field)
+
+#         for field in required_fields:
+#             if not data.get(field):
+#                 missing_fields.append(field)
+
+#         if missing_fields:
+#             error_messages = {
+#                 field: [f"This field is required"] for field in missing_fields
+#             }
+#             raise serializers.ValidationError(error_messages)
+
+#         return data
+
+#     def validate_location(self, value):
+#         if value == "Other":
+#             if not self.initial_data.get("other_location"):
+#                 raise serializers.ValidationError(
+#                     "Please provide a value for other_location field."
+#                 )
+#         return value
+
+    # def create(self, validated_data):
+    #     if validated_data["location"] == "Other":
+    #         validated_data["other_location"] = self.initial_data.get(
+    #             "other_location", ""
+    #         )
+    #     return super().create(validated_data)
 class CreateReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
@@ -17,7 +109,7 @@ class CreateReportSerializer(serializers.ModelSerializer):
             "abuse_type",
             "date_and_time",
             "location",
-            "other_location",  # Include other_location field
+            "other_location",
             "description",
             "perpetrator_fullname",
             "perpetrator_gender",
@@ -40,7 +132,6 @@ class CreateReportSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         report_for = data.get("report_for")
-        missing_fields = []
 
         # Required fields regardless of report_for
         required_fields = [
@@ -52,17 +143,8 @@ class CreateReportSerializer(serializers.ModelSerializer):
             "relationship",
         ]
 
-        if report_for == "Self":
-            user = self.context["request"].user
-            profile = user.profile
-            data["victim_email"] = user.email
-            data["victim_full_name"] = user.full_name
-            data["victim_phone"] = user.phone_number
-            data["victim_gender"] = user.gender
-            data["victim_reg_no"] = profile.reg_no
-            data["victim_college"] = profile.college
-        elif report_for == "Else":
-            victim_fields = [
+        if report_for == "Else":
+            required_fields = [
                 "victim_email",
                 "victim_full_name",
                 "victim_phone",
@@ -70,19 +152,29 @@ class CreateReportSerializer(serializers.ModelSerializer):
                 "victim_reg_no",
                 "victim_college",
             ]
-            for field in victim_fields:
+
+            missing_fields = []
+
+            for field in required_fields:
                 if not data.get(field):
                     missing_fields.append(field)
 
-        for field in required_fields:
-            if not data.get(field):
-                missing_fields.append(field)
+            if missing_fields:
+                error_messages = {
+                    field: [f"This field is required"] for field in missing_fields
+                }
+                raise serializers.ValidationError(error_messages)
+        elif report_for == "Self":
+            # Populate victim details using user's data
+            user = self.context["request"].user
+            profile = user.profile
 
-        if missing_fields:
-            error_messages = {
-                field: [f"This field is required"] for field in missing_fields
-            }
-            raise serializers.ValidationError(error_messages)
+            data["victim_email"] = user.email
+            data["victim_full_name"] = user.full_name
+            data["victim_phone"] = user.phone_number
+            data["victim_gender"] = user.gender
+            data["victim_reg_no"] = profile.reg_no
+            data["victim_college"] = profile.college
 
         return data
 
