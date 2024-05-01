@@ -61,7 +61,7 @@ class Report(models.Model):
     date_and_time = models.DateTimeField()
     # location = models.TextField(max_length=20)
     location = models.CharField(max_length=20, choices=LOCATIONS_CHOICES)
-    other_location = models.CharField(max_length=255, blank=True, null=True)
+    other_location = models.CharField(max_length=255, blank=True, null=True, default=None)
     description = models.TextField()
     # Perpetrator Details
     perpetrator_fullname = models.TextField(max_length=20, blank=True, null=True)
@@ -118,7 +118,7 @@ class AnonymousReport(models.Model):
     date_and_time = models.DateTimeField()
     # location = models.TextField(max_length=20)
     location = models.CharField(max_length=20, choices=LOCATIONS_CHOICES)
-    other_location = models.CharField(max_length=255, blank=True, null=True)
+    other_location = models.CharField(max_length=255, blank=True, null=True, default=None)
     description = models.TextField()
     # Perpetrator Details
     perpetrator_fullname = models.TextField(max_length=20, blank=True, null=True)
