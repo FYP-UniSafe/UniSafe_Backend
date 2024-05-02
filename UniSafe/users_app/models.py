@@ -25,7 +25,7 @@ class UserManager(BaseUserManager):
 
         user.is_student = True
         user.save(using=self._db)
-        user.save()
+        # user.save()
         return user
 
     def create_genderdesk(self, email, password=None, **extra_fields):
@@ -33,21 +33,21 @@ class UserManager(BaseUserManager):
         user.is_genderdesk = True
         user.is_staff = True
         user.save(using=self._db)
-        user.save()
+        # user.save()
         return user
 
     def create_police(self, email, password=None, **extra_fields):
         user = self.create_user(email, password, **extra_fields)
         user.is_police = True
         user.save(using=self._db)
-        user.save()
+        # user.save()
         return user
 
     def create_consultant(self, email, password=None, **extra_fields):
         user = self.create_user(email, password, **extra_fields)
         user.is_consultant = True
         user.save(using=self._db)
-        user.save()
+        # user.save()
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
