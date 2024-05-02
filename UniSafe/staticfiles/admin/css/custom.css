@@ -1,0 +1,4 @@
+.navbar-brand img {
+    width: 10vw;  /* Adjust the width as needed */
+    height: 10vh;  /* Maintain aspect ratio */
+}

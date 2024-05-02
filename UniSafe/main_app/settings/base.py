@@ -19,6 +19,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -98,8 +99,11 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 
 # Default primary key field type
@@ -159,3 +163,21 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = "UniSafe"
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "UniSafe | Admin Dashboard",
+    "site_header": "UniSafe",
+    "site_brand": "UniSafe",
+    "site_logo": "logo.png",
+    "welcome_sign": "Welcome to UniSafe",
+    "site_icon": "favicon.ico",
+    "show_ui_builder": True,
+    # "copyright": "UniSafe © 2024. All rights reserved"
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "sandstone",
+    # "theme": "materia",
+    # "theme": "simplex",
+}

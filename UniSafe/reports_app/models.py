@@ -1,5 +1,13 @@
 from django.db import models
 from users_app.models import *
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
+def validate_file_size(value):
+    filesize = value.size
+    
+    if filesize > 262144000:  # 250 MB (250 * 1024 * 1024)
+        raise ValidationError(_("The maximum file size that can be uploaded is 250MB"))
 
 
 class Report(models.Model):
@@ -144,7 +152,7 @@ class Evidence(models.Model):
         blank=True,
         related_name="report_evidence",
     )
-    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
+    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True, validators=[validate_file_size])
 
 
 class AnonymousEvidence(models.Model):
@@ -154,4 +162,4 @@ class AnonymousEvidence(models.Model):
         blank=True,
         related_name="anonymous_evidence",
     )
-    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True)
+    evidence = models.FileField(upload_to="assets/evidence/", blank=True, null=True, validators=[validate_file_size])
