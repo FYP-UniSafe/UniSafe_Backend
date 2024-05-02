@@ -98,7 +98,7 @@ class ReportAdmin(admin.ModelAdmin):
         "created_on",
         "reporter",
         "rejection_reason",
-        "assigned_gd",
+        # "assigned_gd",
         "reporter_email",
         "reporter_phone",
         "reporter_full_name",
@@ -130,9 +130,12 @@ class AnonymousReportAdmin(admin.ModelAdmin):
     list_display = (
         "report_id",
         "status",
+        "rejection_reason",
         "abuse_type",
         "created_on",
         "assigned_gd",
+        "police_status",
+        "assigned_officer",
     )
     fieldsets = (
         (
@@ -165,9 +168,10 @@ class AnonymousReportAdmin(admin.ModelAdmin):
         ("Police Status", {"fields": ("police_status", "assigned_officer")}),
     )
     readonly_fields = (
+        "status",
         "report_id",
         "created_on",
-        "assigned_gd",
+        # "assigned_gd",
         "abuse_type",
         "date_and_time",
         "location",
@@ -176,6 +180,8 @@ class AnonymousReportAdmin(admin.ModelAdmin):
         "perpetrator_fullname",
         "perpetrator_gender",
         "relationship",
+        "police_status",
+        # "assigned_officer",
     )
 
     ordering = ("created_on",)

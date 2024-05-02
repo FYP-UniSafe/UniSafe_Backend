@@ -61,10 +61,10 @@ class CreateReportView(generics.CreateAPIView):
                 "other_location"
             )
 
-        serializer.save()
-
         if location != "Other" and "other_location" in serializer.validated_data:
             del serializer.validated_data["other_location"]
+
+        serializer.save()
 
 
 class CreateAnonymousReportView(generics.CreateAPIView):
@@ -80,11 +80,11 @@ class CreateAnonymousReportView(generics.CreateAPIView):
                 "other_location"
             )
 
+        if location != "Other" and "other_location" in serializer.validated_data:
+            del serializer.validated_data["other_location"]
+
         try:
             report_instance = serializer.save()
-
-            if location != "Other" and "other_location" in serializer.validated_data:
-                del serializer.validated_data["other_location"]
 
             evidence_data = request.FILES.getlist("evidence")
 
@@ -218,6 +218,8 @@ class AcceptAnonymousReportView(generics.GenericAPIView):
                 )
 
             report.status = "IN PROGRESS"
+            report.assigned_gd = user.profile
+            report.rejection_reason = None
             report.save()
 
             return Response(
@@ -322,7 +324,6 @@ class RejectAnonymousReportView(generics.GenericAPIView):
 
     def put(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-
         user = request.user
         profile = user.profile
 
@@ -367,20 +368,23 @@ class RejectAnonymousReportView(generics.GenericAPIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
-            if "rejection_reason" not in request.data:
-                return Response(
-                    {"error": "Rejection reason is required."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            # Before changing the status, check status is report is new, then this reject counts as a report handled.
+            if report.status == "PENDING":
+                profile.report_count += 1
+                profile.save()
 
             report.status = "REJECTED"
             report.rejection_reason = rejection_reason
+            report.assigned_gd = user.profile
             report.save()
 
-            return Response(
-                {"message": "Anonymous report rejected successfully."},
-                status=status.HTTP_200_OK,
-            )
+            response_data = {
+                "message": "Anonymous Report rejected successfully.",
+                "rejection_reason": report.rejection_reason,
+                "status": report.status,
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

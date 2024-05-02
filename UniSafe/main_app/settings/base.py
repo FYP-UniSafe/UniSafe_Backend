@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
 
 
 INSTALLED_APPS = [
