@@ -333,7 +333,7 @@ class Police(models.Model):
     )
     custom_id = models.CharField(max_length=25, unique=True)
     police_no = models.CharField(max_length=25, unique=True, blank=False)
-    station = models.CharField(max_length=20, blank=False)
+    station = models.CharField(max_length=25, blank=False)
     report_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
