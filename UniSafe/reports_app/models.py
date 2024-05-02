@@ -34,14 +34,14 @@ class Report(models.Model):
         max_length=20, default="PENDING"
     )  # Pending, Rejected, In Progress, Forwarded to Police, Resolved.
     assigned_gd = models.ForeignKey(
-        GenderDesk, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
+        GenderDesk, on_delete=models.CASCADE, null=True, blank=True, default=None
     )
     rejection_reason = models.TextField(
         max_length=255, blank=True, null=True, default=None
     )
     # Reporter Contact Details
     reporter = models.ForeignKey(
-        Student, on_delete=models.DO_NOTHING, related_name="reported_cases"
+        Student, on_delete=models.CASCADE, related_name="reported_cases"
     )
     reporter_full_name = models.CharField(max_length=255)
     reporter_gender = models.CharField(max_length=6)
@@ -70,7 +70,7 @@ class Report(models.Model):
     # Police Status
     police_status = models.CharField(max_length=20, default="UNFORWARDED")
     assigned_officer = models.ForeignKey(
-        Police, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
+        Police, on_delete=models.CASCADE, null=True, blank=True, default=None
     )
 
     def save(self, *args, **kwargs):
@@ -108,7 +108,7 @@ class AnonymousReport(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, default="PENDING")
     assigned_gd = models.ForeignKey(
-        GenderDesk, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
+        GenderDesk, on_delete=models.CASCADE, null=True, blank=True, default=None
     )
     rejection_reason = models.TextField(
         max_length=255, blank=True, null=True, default=None
@@ -127,7 +127,7 @@ class AnonymousReport(models.Model):
     # Police Status
     police_status = models.CharField(max_length=20, default="UNFORWARDED")
     assigned_officer = models.ForeignKey(
-        Police, on_delete=models.DO_NOTHING, null=True, blank=True, default=None
+        Police, on_delete=models.CASCADE, null=True, blank=True, default=None
     )
 
     def save(self, *args, **kwargs):
