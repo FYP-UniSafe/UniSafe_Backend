@@ -99,7 +99,8 @@ class CreateReportSerializer(serializers.ModelSerializer):
             validated_data["other_location"] = self.initial_data.get(
                 "other_location", ""
             )
-        return super().create(validated_data)
+        report = super().create(validated_data)
+        return ReportSerializer(report).data
 
 
 class ReportListSerializer(serializers.ModelSerializer):
@@ -218,7 +219,8 @@ class CreateAnonymousReportSerializer(serializers.ModelSerializer):
             validated_data["other_location"] = self.initial_data.get(
                 "other_location", ""
             )
-        return super().create(validated_data)
+        report = super().create(validated_data)
+        return AnonymousReportSerializer(report).data
 
 
 class AnonymousReportListSerializer(serializers.ModelSerializer):
