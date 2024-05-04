@@ -12,6 +12,7 @@ class CreateReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = [
+            "report_id",
             "status",
             "report_for",
             "abuse_type",
@@ -28,6 +29,10 @@ class CreateReportSerializer(serializers.ModelSerializer):
             "victim_gender",
             "victim_reg_no",
             "victim_college",
+        ]
+        read_only_fields = [
+            "report_id",
+            "status",
         ]
         extra_kwargs = {
             "victim_email": {"required": False},
@@ -200,6 +205,7 @@ class CreateAnonymousReportSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "status",
+            "report_id",
             "assigned_gd",
             "police_status",
             "assigned_officer",
@@ -249,15 +255,16 @@ class AssignedAnonymousReportsSerializer(serializers.ModelSerializer):
 class ForwardAnonymousReportSerializer(serializers.Serializer):
     report_id = serializers.CharField(required=True)
 
+
 class ReceiveAnonymousReportSerializer(serializers.Serializer):
     report_id = serializers.CharField(required=True)
+
 
 class CloseAnonymousReportSerializer(serializers.Serializer):
     report_id = serializers.CharField(required=True)
 
+
 class ForwardedAnonymousReportsSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnonymousReport
-        fields = '__all__'
-
-
+        fields = "__all__"
