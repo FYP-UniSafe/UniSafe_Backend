@@ -5,6 +5,11 @@ from users_app.models import *
 
 class Appointment(models.Model):
     SESSION_TYPE_CHOICES = [("Physical", "Physical"), ("Online", "Online")]
+    APPOINTMENT_STATUS_CHOICES = [
+        ("REQUESTED", "REQUESTED"),
+        ("SCHEDULED", "SCHEDULED"),
+        ("CLOSED", "CLOSED"),
+    ]
 
     # Appointment general information
     appointment_id = models.CharField(primary_key=True, max_length=25, unique=True)
@@ -15,15 +20,24 @@ class Appointment(models.Model):
         blank=True,
         default=None,
     )
-    date = models.DateField(blank=False, null=False)
-    time = models.TimeField(null=True, blank=True, default=None)
+    created_on = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=15, choices=APPOINTMENT_STATUS_CHOICES, default='REQUESTED')
     session_type = models.CharField(max_length=10, choices=SESSION_TYPE_CHOICES)
+    date = models.DateField(blank=False, null=False)
+    start_time = models.TimeField(null=True, blank=True, default=None)
+    end_time = models.TimeField(null=True, blank=True, default=None)
+    time_slot = models.CharField(max_length=13, null=True, blank=True, default=None)
+    physical_location = models.CharField(max_length=25, blank=True, default=None, null=True)
 
     # Student information
-    student = models.ForeignKey(
-        Student, on_delete=models.DO_NOTHING, related_name="scheduled_appointments"
+    client = models.ForeignKey(
+        Student,
+        on_delete=models.DO_NOTHING,
+        related_name="appointments_created",
+        null=False,
+        blank=False,
     )
-    student_full_name = models.CharField(max_length=100)
+    student_full_name = models.CharField(max_length=50)
     student_email = models.EmailField()
     student_phone = models.CharField(max_length=15)
     student_reg_no = models.CharField(max_length=20)
@@ -45,8 +59,9 @@ class Appointment(models.Model):
         return self.appointment_id
 
     def save(self, *args, **kwargs):
+        if self.start_time and self.end_time:
+            self.time_slot = f"{self.start_time.strftime('%H:%M')} - {self.end_time.strftime('%H:%M')}"
         if not self.pk:
             total_appointments = Appointment.objects.count()
             self.appointment_id = f"AP{self.student_reg_no}-{total_appointments+1}"
-
         super().save(*args, **kwargs)
