@@ -64,3 +64,17 @@ class AcceptAppointmentView(APIView):
         )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StudentAppointmentsListView(generics.ListAPIView):
+    serializer_class = AppointmentSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        if not self.request.user.is_student:
+            return Response(
+                {"error": "Only students can view their appointments"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return Appointment.objects.filter(client=self.request.user.profile)
