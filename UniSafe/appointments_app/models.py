@@ -9,6 +9,7 @@ class Appointment(models.Model):
         ("REQUESTED", "REQUESTED"),
         ("SCHEDULED", "SCHEDULED"),
         ("CLOSED", "CLOSED"),
+        ("CANCELLED", "CANCELLED")
     ]
 
     # Appointment general information

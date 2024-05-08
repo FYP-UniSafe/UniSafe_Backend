@@ -26,32 +26,6 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
         ]
 
 
-# class AcceptAppointmentSerializer(serializers.ModelSerializer):
-#     appointment_id = serializers.CharField(read_only=True)
-
-#     class Meta:
-#         model = Appointment
-#         fields = ["appointment_id", "physical_location", "start_time", "end_time"]
-
-#     def validate(self, attrs):
-#         session_type = (
-#             self.instance.session_type if self.instance else attrs.get("session_type")
-#         )
-#         physical_location = attrs.get("physical_location")
-
-#         if session_type == "Physical" and not physical_location:
-#             raise serializers.ValidationError(
-#                 "physical_location is required for Physical appointments."
-#             )
-
-#         if not attrs.get("start_time"):
-#             raise serializers.ValidationError("start_time is required.")
-
-#         if not attrs.get("end_time"):
-#             raise serializers.ValidationError("end_time is required.")
-
-
-#         return attrs
 class AcceptAppointmentSerializer(serializers.ModelSerializer):
     appointment_id = serializers.CharField(read_only=True)
 
