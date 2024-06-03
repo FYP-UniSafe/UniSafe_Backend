@@ -23,7 +23,6 @@ urlpatterns = [
     path('list', ListAllReportsView.as_view(), name='list-all-reports'),
     path('anonymous/list', ListAllAnonymousReportsView.as_view(), name='list-all-anonymous-reports'),
 
-
     path('list/created', StudentReportsListView.as_view(), name='student-reports-list'),
 
     path('list/assigned', AssignedReportsListView.as_view(), name='genderdesk-reports-list'),
@@ -31,6 +30,9 @@ urlpatterns = [
 
     path('list/forwarded', ForwardedReportsListView.as_view(), name='forwarded-reports-list'),
     path('anonymous/list/forwarded', ForwardedAnonymousReportsListView.as_view(), name='forwarded-anonymous-reports-list'),
+
+    path('per/location', ReportsPerLocationView.as_view(), name='reports-per-location'),
+    path('per/casetype', ReportsPerCaseTypeView.as_view(), name='reports-per-case-type'),
 
     #Create a way for the police to reject the report and give it back to the GenderDesk.
 ]

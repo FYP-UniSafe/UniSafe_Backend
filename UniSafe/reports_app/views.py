@@ -4,6 +4,7 @@ from .serializers import *
 from users_app.models import *
 from . import models
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.db.models import Count
 
 
 class CreateReportView(generics.CreateAPIView):
@@ -883,3 +884,59 @@ class ForwardedAnonymousReportsListView(generics.ListAPIView):
             )
         else:
             return AnonymousReport.objects.none()
+
+
+class ReportsPerLocationView(generics.ListAPIView):
+
+    def list(self, request, *args, **kwargs):
+        report_location_data = Report.objects.values("location").annotate(
+            count=Count("location")
+        )
+        anonymous_report_location_data = AnonymousReport.objects.values(
+            "location"
+        ).annotate(count=Count("location"))
+
+        combined_data = {}
+        for data in report_location_data:
+            combined_data[data["location"]] = (
+                combined_data.get(data["location"], 0) + data["count"]
+            )
+        for data in anonymous_report_location_data:
+            combined_data[data["location"]] = (
+                combined_data.get(data["location"], 0) + data["count"]
+            )
+
+        response_data = [
+            {"location": location, "count": count}
+            for location, count in combined_data.items()
+        ]
+
+        return Response(response_data)
+
+
+class ReportsPerCaseTypeView(generics.ListAPIView):
+
+    def list(self, request, *args, **kwargs):
+        report_case_type_data = Report.objects.values("abuse_type").annotate(
+            count=Count("abuse_type")
+        )
+        anonymous_report_case_type_data = AnonymousReport.objects.values(
+            "abuse_type"
+        ).annotate(count=Count("abuse_type"))
+
+        combined_data = {}
+        for data in report_case_type_data:
+            combined_data[data["abuse_type"]] = (
+                combined_data.get(data["abuse_type"], 0) + data["count"]
+            )
+        for data in anonymous_report_case_type_data:
+            combined_data[data["abuse_type"]] = (
+                combined_data.get(data["abuse_type"], 0) + data["count"]
+            )
+
+        response_data = [
+            {"abuse_type": abuse_type, "count": count}
+            for abuse_type, count in combined_data.items()
+        ]
+
+        return Response(response_data)
