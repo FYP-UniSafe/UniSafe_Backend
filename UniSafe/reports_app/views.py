@@ -914,29 +914,29 @@ class ReportsPerLocationView(generics.ListAPIView):
         return Response(response_data)
 
 
-class ReportsPerCaseTypeView(generics.ListAPIView):
+# class ReportsPerCaseTypeView(generics.ListAPIView):
 
-    def list(self, request, *args, **kwargs):
-        report_case_type_data = Report.objects.values("abuse_type").annotate(
-            count=Count("abuse_type")
-        )
-        anonymous_report_case_type_data = AnonymousReport.objects.values(
-            "abuse_type"
-        ).annotate(count=Count("abuse_type"))
+#     def list(self, request, *args, **kwargs):
+#         report_case_type_data = Report.objects.values("abuse_type").annotate(
+#             count=Count("abuse_type")
+#         )
+#         anonymous_report_case_type_data = AnonymousReport.objects.values(
+#             "abuse_type"
+#         ).annotate(count=Count("abuse_type"))
 
-        combined_data = {}
-        for data in report_case_type_data:
-            combined_data[data["abuse_type"]] = (
-                combined_data.get(data["abuse_type"], 0) + data["count"]
-            )
-        for data in anonymous_report_case_type_data:
-            combined_data[data["abuse_type"]] = (
-                combined_data.get(data["abuse_type"], 0) + data["count"]
-            )
+#         combined_data = {}
+#         for data in report_case_type_data:
+#             combined_data[data["abuse_type"]] = (
+#                 combined_data.get(data["abuse_type"], 0) + data["count"]
+#             )
+#         for data in anonymous_report_case_type_data:
+#             combined_data[data["abuse_type"]] = (
+#                 combined_data.get(data["abuse_type"], 0) + data["count"]
+#             )
 
-        response_data = [
-            {"abuse_type": abuse_type, "count": count}
-            for abuse_type, count in combined_data.items()
-        ]
+#         response_data = [
+#             {"abuse_type": abuse_type, "count": count}
+#             for abuse_type, count in combined_data.items()
+#         ]
 
-        return Response(response_data)
+#         return Response(response_data)
