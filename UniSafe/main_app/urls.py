@@ -33,5 +33,6 @@ urlpatterns = [
     path('reports/', include('reports_app.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('swagger-download/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('statistics/', include('statistics_app.urls')),
     path("users/", include("users_app.urls")),
 ]
