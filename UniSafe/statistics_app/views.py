@@ -9,9 +9,11 @@ from reports_app.models import Report, AnonymousReport
 class ReportCountsView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
-        report_count = Report.objects.filter(~Q(status="REJECTED")).count()
-        anonymous_report_count = AnonymousReport.objects.filter(
-            ~Q(status="REJECTED")
+        report_count = Report.objects.exclude(
+            status__in=["REJECTED", "PENDING"]
+        ).count()
+        anonymous_report_count = AnonymousReport.objects.exclude(
+            status__in=["REJECTED", "PENDING"]
         ).count()
 
         response_data = {
@@ -26,12 +28,12 @@ class ReportsPerCaseTypeView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         report_case_type_data = (
-            Report.objects.exclude(status="REJECTED")
+            Report.objects.exclude(status__in=["REJECTED", "PENDING"])
             .values("abuse_type")
             .annotate(count=Count("abuse_type"))
         )
         anonymous_report_case_type_data = (
-            AnonymousReport.objects.exclude(status="REJECTED")
+            AnonymousReport.objects.exclude(status__in=["REJECTED", "PENDING"])
             .values("abuse_type")
             .annotate(count=Count("abuse_type"))
         )
@@ -90,11 +92,13 @@ class ReportsPerYearView(generics.ListAPIView):
             end_date = timezone.make_aware(datetime(year + 1, 7, 31))
 
             report_count = Report.objects.filter(
-                Q(created_on__range=(start_date, end_date)) & ~Q(status="REJECTED")
+                Q(created_on__range=(start_date, end_date))
+                & ~Q(status__in=["REJECTED", "PENDING"])
             ).count()
 
             anonymous_report_count = AnonymousReport.objects.filter(
-                Q(created_on__range=(start_date, end_date)) & ~Q(status="REJECTED")
+                Q(created_on__range=(start_date, end_date))
+                & ~Q(status__in=["REJECTED", "PENDING"])
             ).count()
 
             response_data.append(
@@ -164,10 +168,10 @@ class ReportsPerLocationView(generics.ListAPIView):
 
         for location in locations:
             report_count = Report.objects.filter(
-                ~Q(status="REJECTED"), location=location
+                ~Q(status__in=["REJECTED", "PENDING"]), location=location
             ).count()
             anonymous_report_count = AnonymousReport.objects.filter(
-                ~Q(status="REJECTED"), location=location
+                ~Q(status__in=["REJECTED", "PENDING"]), location=location
             ).count()
             locations[location]["cases"] = report_count + anonymous_report_count
 
