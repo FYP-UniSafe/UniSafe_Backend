@@ -27,6 +27,9 @@ class ReportCountsView(generics.ListAPIView):
 class ReportsPerCaseTypeView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
+        # Get all possible abuse types
+        all_abuse_types = dict(Report.ABUSE_TYPE_CHOICES).keys()
+
         report_case_type_data = (
             Report.objects.exclude(status__in=["REJECTED", "PENDING"])
             .values("abuse_type")
@@ -39,14 +42,13 @@ class ReportsPerCaseTypeView(generics.ListAPIView):
         )
 
         combined_data = {}
+        for abuse_type in all_abuse_types:
+            combined_data[abuse_type] = 0
+
         for data in report_case_type_data:
-            combined_data[data["abuse_type"]] = (
-                combined_data.get(data["abuse_type"], 0) + data["count"]
-            )
+            combined_data[data["abuse_type"]] += data["count"]
         for data in anonymous_report_case_type_data:
-            combined_data[data["abuse_type"]] = (
-                combined_data.get(data["abuse_type"], 0) + data["count"]
-            )
+            combined_data[data["abuse_type"]] += data["count"]
 
         response_data = [
             {"abuse_type": abuse_type, "count": count}
@@ -54,7 +56,6 @@ class ReportsPerCaseTypeView(generics.ListAPIView):
         ]
 
         return Response(response_data)
-
 
 # THIS WILL BE USED ONCE THE SYSTEM IS COMPLETE
 # class ReportsPerYearView(generics.ListAPIView):
