@@ -213,6 +213,10 @@ class AuxiliaryPoliceLocationsAPIView(generics.ListAPIView):
             "Hall IV": {"lat": -6.7761797984561065, "lng": 39.20544217547933},
             "Hall VI": {"lat": -6.776144171916187, "lng": 39.20273924335007},
             "Hall VII": {"lat": -6.777306308578911, "lng": 39.202940913644134},
+            "Mabibo Auxiliary Police Station": {
+                "lat": -6.804755963543628,
+                "lng": 39.20821947564019,
+            },
             "Main gate 1": {
                 "lat": -6.784998750126954,
                 "lng": 39.20597565309388,
