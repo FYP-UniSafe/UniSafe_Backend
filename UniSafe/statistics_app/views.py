@@ -57,6 +57,7 @@ class ReportsPerCaseTypeView(generics.ListAPIView):
 
         return Response(response_data)
 
+
 # THIS WILL BE USED ONCE THE SYSTEM IS COMPLETE
 # class ReportsPerYearView(generics.ListAPIView):
 
@@ -175,5 +176,56 @@ class ReportsPerLocationView(generics.ListAPIView):
                 ~Q(status__in=["REJECTED", "PENDING"]), location=location
             ).count()
             locations[location]["cases"] = report_count + anonymous_report_count
+
+        return Response(locations)
+
+
+class AuxiliaryPoliceLocationsAPIView(generics.ListAPIView):
+    def get(self, request, *args, **kwargs):
+        locations = {
+            "COICT": {
+                "lat": -6.7723947720719515,
+                "lng": 39.24013201306791,
+            },
+            "Main Campus": {
+                "lat": -6.780613140045591,
+                "lng": 39.20244879164626,
+            },
+            "COET": {
+                "lat": -6.780254644160537,
+                "lng": 39.207038910861165,
+            },
+            "Magufuli hostels": [
+                {"lat": -6.780446328282624, "lng": 39.212005819368876},
+                {"lat": -6.780979182601346, "lng": 39.21403712212921},
+                {"lat": -6.7810013907645255, "lng": 39.215073658265176},
+            ],
+            "Institute of Confucius": {
+                "lat": -6.778984136274645,
+                "lng": 39.201087006098454,
+            },
+            "Hall I": {"lat": -6.777839373524523, "lng": 39.20635704475038},
+            "Hall II": {"lat": -6.776405851905548, "lng": 39.207642138403045},
+            "Hall III": {
+                "lat": -6.775044718739044,
+                "lng": 39.20736550752699,
+            },
+            "Hall IV": {"lat": -6.7761797984561065, "lng": 39.20544217547933},
+            "Hall VI": {"lat": -6.776144171916187, "lng": 39.20273924335007},
+            "Hall VII": {"lat": -6.777306308578911, "lng": 39.202940913644134},
+            "Main gate I": {
+                "lat": -6.784998750126954,
+                "lng": 39.20597565309388,
+            },
+            "Main Gate II": {
+                "lat": -6.767669496967756,
+                "lng": 39.21423133625713,
+            },
+            "Utawala": {
+                "lat": -6.7804754877668065,
+                "lng": 39.203344272644735,
+            },
+            "Police Station": {"lat": -6.78111918030288, "lng": 39.20196140838832},
+        }
 
         return Response(locations)
