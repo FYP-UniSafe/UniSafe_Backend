@@ -175,18 +175,21 @@ class ListAllReportsSerializer(serializers.ModelSerializer):
 
 
 class StudentReportsSerializer(serializers.ModelSerializer):
+    report_evidence = EvidenceSerializer(many=True, read_only=True)
     class Meta:
         model = Report
         fields = "__all__"
 
 
 class AssignedReportsSerializer(serializers.ModelSerializer):
+    report_evidence = EvidenceSerializer(many=True, read_only=True)
     class Meta:
         model = Report
         fields = "__all__"
 
 
 class ForwardedReportsSerializer(serializers.ModelSerializer):
+    report_evidence = EvidenceSerializer(many=True, read_only=True)
     class Meta:
         model = Report
         fields = "__all__"
@@ -267,6 +270,7 @@ class RejectAnonymousReportSerializer(serializers.Serializer):
 
 
 class AssignedAnonymousReportsSerializer(serializers.ModelSerializer):
+    anonymous_evidence = AnonymousEvidenceSerializer(many=True, read_only=True)
     class Meta:
         model = AnonymousReport
         fields = "__all__"
@@ -285,6 +289,7 @@ class CloseAnonymousReportSerializer(serializers.Serializer):
 
 
 class ForwardedAnonymousReportsSerializer(serializers.ModelSerializer):
+    anonymous_evidence = AnonymousEvidenceSerializer(many=True, read_only=True)
     class Meta:
         model = AnonymousReport
         fields = "__all__"
