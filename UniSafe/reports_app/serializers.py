@@ -1,8 +1,22 @@
 from rest_framework import serializers
-from .models import Report, AnonymousReport
+from .models import Report, AnonymousReport, Evidence, AnonymousEvidence
+
+
+class EvidenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evidence
+        fields = ["id", "evidence"]
+
+
+class AnonymousEvidenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnonymousEvidence
+        fields = ["id", "evidence"]
 
 
 class ReportSerializer(serializers.ModelSerializer):
+    evidences = EvidenceSerializer(many=True, read_only=True)
+
     class Meta:
         model = Report
         fields = "__all__"
@@ -111,6 +125,7 @@ class ReportListSerializer(serializers.ModelSerializer):
     reporter = serializers.CharField(source="reporter_full_name")
     assigned_gd = serializers.CharField(source="assigned_gd.user")
     assigned_officer = serializers.CharField(source="assigned_officer.user")
+    evidences = EvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Report
@@ -151,7 +166,8 @@ class CloseReportSerializer(serializers.Serializer):
 
 
 class ListAllReportsSerializer(serializers.ModelSerializer):
-    evidence = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    # evidence = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    evidences = EvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Report
@@ -178,6 +194,8 @@ class ForwardedReportsSerializer(serializers.ModelSerializer):
 
 # ANONYMOUS REPORT
 class AnonymousReportSerializer(serializers.ModelSerializer):
+    evidences = AnonymousEvidenceSerializer(many=True, read_only=True)
+
     class Meta:
         model = AnonymousReport
         fields = "__all__"
@@ -228,6 +246,8 @@ class CreateAnonymousReportSerializer(serializers.ModelSerializer):
 
 
 class AnonymousReportListSerializer(serializers.ModelSerializer):
+    evidences = AnonymousEvidenceSerializer(many=True, read_only=True)
+
     class Meta:
         model = AnonymousReport
         fields = "__all__"
