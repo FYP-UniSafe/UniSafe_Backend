@@ -20,6 +20,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 INSTALLED_APPS = [
     # "jazzmin",
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -30,7 +31,6 @@ INSTALLED_APPS = [
     "reports_app",
     "statistics_app",
     "appointments_app",
-    "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
@@ -68,13 +68,14 @@ TEMPLATES = [
     },
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     'https://unisafeudsm.nucci.live'
 ] 
 
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 WSGI_APPLICATION = "main_app.wsgi.application"
 
