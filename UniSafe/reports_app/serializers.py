@@ -15,7 +15,7 @@ class AnonymousEvidenceSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
-    evidences = EvidenceSerializer(many=True, read_only=True)
+    report_evidence = EvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Report
@@ -125,7 +125,7 @@ class ReportListSerializer(serializers.ModelSerializer):
     reporter = serializers.CharField(source="reporter_full_name")
     assigned_gd = serializers.CharField(source="assigned_gd.user")
     assigned_officer = serializers.CharField(source="assigned_officer.user")
-    evidences = EvidenceSerializer(many=True, read_only=True)
+    report_evidence = EvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Report
@@ -167,7 +167,7 @@ class CloseReportSerializer(serializers.Serializer):
 
 class ListAllReportsSerializer(serializers.ModelSerializer):
     # evidence = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    evidences = EvidenceSerializer(many=True, read_only=True)
+    report_evidence = EvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Report
@@ -194,7 +194,7 @@ class ForwardedReportsSerializer(serializers.ModelSerializer):
 
 # ANONYMOUS REPORT
 class AnonymousReportSerializer(serializers.ModelSerializer):
-    evidences = AnonymousEvidenceSerializer(many=True, read_only=True)
+    anonymous_evidence = AnonymousEvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = AnonymousReport
@@ -246,7 +246,7 @@ class CreateAnonymousReportSerializer(serializers.ModelSerializer):
 
 
 class AnonymousReportListSerializer(serializers.ModelSerializer):
-    evidences = AnonymousEvidenceSerializer(many=True, read_only=True)
+    anonymous_evidence = AnonymousEvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = AnonymousReport
