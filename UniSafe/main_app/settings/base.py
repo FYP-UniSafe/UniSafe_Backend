@@ -181,3 +181,7 @@ JAZZMIN_UI_TWEAKS = {
     # "theme": "materia",
     # "theme": "simplex",
 }
+
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'assets')
