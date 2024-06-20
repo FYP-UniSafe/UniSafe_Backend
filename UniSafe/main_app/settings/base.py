@@ -68,6 +68,14 @@ TEMPLATES = [
     },
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200',
+    'https://unisafeudsm.nucci.live'
+] 
+
+CORS_ALLOW_CREDENTIALS = True
+
 WSGI_APPLICATION = "main_app.wsgi.application"
 
 
@@ -148,8 +156,6 @@ SIMPLE_JWT = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
 
 
 AUTH_USER_MODEL = "users_app.User"
