@@ -183,5 +183,5 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
-MEDIA_URL = ''
+MEDIA_URL = 'assets/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'assets')
