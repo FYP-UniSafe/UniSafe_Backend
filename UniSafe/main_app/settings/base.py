@@ -15,8 +15,6 @@ BASE_DIR = os.path.dirname(
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-# ALLOWED_HOSTS = ["*"]
-
 
 INSTALLED_APPS = [
     # "jazzmin",
@@ -38,8 +36,8 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -70,17 +68,14 @@ TEMPLATES = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',
-    'https://unisafeudsm.nucci.live'
-] 
+CORS_ALLOWED_ORIGINS = ["http://localhost:4200", "https://unisafeudsm.nucci.live"]
 
 # CORS_ALLOW_ALL_ORIGINS = True
 
 WSGI_APPLICATION = "main_app.wsgi.application"
 
 
-# Password validation
+# Password Validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -157,8 +152,6 @@ SIMPLE_JWT = {
 }
 
 
-
-
 AUTH_USER_MODEL = "users_app.User"
 
 
@@ -190,5 +183,5 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
-MEDIA_URL = 'assets/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'assets')
+MEDIA_URL = "assets/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "assets")
