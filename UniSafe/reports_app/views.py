@@ -874,7 +874,7 @@ class ForwardedReportsListView(generics.ListAPIView):
 
 class ForwardedAnonymousReportsListView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = ForwardAnonymousReportSerializer
+    serializer_class = ForwardedAnonymousReportsSerializer
 
     def get_queryset(self):
         user = self.request.user
