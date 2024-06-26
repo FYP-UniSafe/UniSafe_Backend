@@ -121,6 +121,7 @@ class AnonymousReport(models.Model):
     rejection_reason = models.TextField(
         max_length=255, blank=True, null=True, default=None
     )
+    reporter_phone = models.CharField(max_length=20, null=True, blank=True)
     # Description of the Abuse
     abuse_type = models.CharField(max_length=50, choices=ABUSE_TYPE_CHOICES)
     date_and_time = models.DateTimeField()

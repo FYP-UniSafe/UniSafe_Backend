@@ -146,6 +146,7 @@ class AnonymousReportAdmin(admin.ModelAdmin):
                     "created_on",
                     "status",
                     "assigned_gd",
+                    "reporter_phone"
                 )
             },
         ),
