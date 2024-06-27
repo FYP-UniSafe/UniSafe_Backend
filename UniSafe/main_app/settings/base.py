@@ -17,7 +17,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 
 INSTALLED_APPS = [
-    # "jazzmin",
+    "jazzmin",
     "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
