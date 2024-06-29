@@ -9,7 +9,8 @@ class Appointment(models.Model):
         ("REQUESTED", "REQUESTED"),
         ("SCHEDULED", "SCHEDULED"),
         ("CLOSED", "CLOSED"),
-        ("CANCELLED", "CANCELLED")
+        ("CANCELLED", "CANCELLED"),
+        ("MISSED", "MISSED")
     ]
 
     # Appointment general information
@@ -24,7 +25,7 @@ class Appointment(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=15, choices=APPOINTMENT_STATUS_CHOICES, default='REQUESTED')
     session_type = models.CharField(max_length=10, choices=SESSION_TYPE_CHOICES)
-    date = models.DateField(blank=False, null=False)
+    date = models.DateField(blank=True, null=True)
     start_time = models.TimeField(null=True, blank=True, default=None)
     end_time = models.TimeField(null=True, blank=True, default=None)
     time_slot = models.CharField(max_length=13, null=True, blank=True, default=None)

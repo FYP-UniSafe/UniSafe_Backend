@@ -185,3 +185,14 @@ JAZZMIN_UI_TWEAKS = {
 
 MEDIA_URL = "assets/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "assets")
+
+CELERY_BEAT_SCHEDULE = {
+    'mark-missed-appointments-every-hour': {
+        'task': 'appointment_app.tasks.mark_missed_appointments',
+        'schedule': 3600,  # Run every hour
+    },
+}
+
+CELERY_BROKER_URL = 'amqp://localhost'
+
+
