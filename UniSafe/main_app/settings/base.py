@@ -198,6 +198,7 @@ CELERY_BEAT_SCHEDULE = {
 
 # CELERY_BROKER_URL = 'amqp://localhost'
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_RESULT_BACKEND = 'django-db'
 
 
 
