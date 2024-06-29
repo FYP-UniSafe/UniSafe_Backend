@@ -18,6 +18,9 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 INSTALLED_APPS = [
     "jazzmin",
+    "celery",
+    "django_celery_beat",
+    "django_celery_results",
     "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
