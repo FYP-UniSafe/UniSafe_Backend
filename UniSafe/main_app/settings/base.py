@@ -191,7 +191,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "assets")
 
 CELERY_BEAT_SCHEDULE = {
     'mark-missed-appointments-every-hour': {
-        'task': 'appointment_app.tasks.mark_missed_appointments',
+        'task': 'appointments_app.tasks.mark_missed_appointments',
         'schedule': 3600,  # Run every hour
     },
 }
