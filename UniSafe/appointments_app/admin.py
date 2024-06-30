@@ -1,5 +1,8 @@
 from django.contrib import admin
 from .models import Appointment
+from django_celery_results.admin import TaskResult, GroupResult
+admin.site.unregister(TaskResult)
+admin.site.unregister(GroupResult)
 
 
 @admin.register(Appointment)
