@@ -35,7 +35,6 @@ class AcceptAppointmentView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        # Get the appointment_id from URL kwargs
         appointment_id = self.kwargs.get("pk")
 
         try:
@@ -64,7 +63,14 @@ class AcceptAppointmentView(APIView):
             consultant_office=user.profile.office,
         )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "message": "Appointment has been successfully accepted.",
+                "appointment": serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
+
 
 
 class StudentAppointmentsListView(generics.ListAPIView):
