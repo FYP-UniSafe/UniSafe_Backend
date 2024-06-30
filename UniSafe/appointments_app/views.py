@@ -5,6 +5,8 @@ from .models import *
 from .serializers import *
 from django.utils import timezone
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+
 
 
 class CreateAppointmentView(generics.CreateAPIView):
@@ -66,11 +68,10 @@ class AcceptAppointmentView(APIView):
         return Response(
             {
                 "message": "Appointment has been successfully accepted.",
-                "appointment": serializer.data
+                "appointment": serializer.data,
             },
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
-
 
 
 class StudentAppointmentsListView(generics.ListAPIView):
@@ -141,3 +142,15 @@ class CancelAppointmentView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class ConsultantAppointmentsListView(generics.ListAPIView):
+    serializer_class = AppointmentSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_consultant:
+            raise PermissionDenied("Only consultants can view all appointments.")
+
+        return Appointment.objects.all()
