@@ -6,6 +6,7 @@ from django_celery_beat.models import (
     IntervalSchedule,
     PeriodicTask,
     SolarSchedule,
+    ClockedSchedule,
 )
 
 # Unregister the periodic task models
@@ -15,6 +16,7 @@ admin.site.unregister(PeriodicTask)
 admin.site.unregister(SolarSchedule)
 admin.site.unregister(TaskResult)
 admin.site.unregister(GroupResult)
+admin.site.unregister(ClockedSchedule)
 
 
 @admin.register(Appointment)
