@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "reports_app",
     "statistics_app",
     "appointments_app",
+    "video_call",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
@@ -190,15 +191,12 @@ MEDIA_URL = "assets/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "assets")
 
 CELERY_BEAT_SCHEDULE = {
-    'mark-missed-appointments-every-hour': {
-        'task': 'appointments_app.tasks.mark_missed_appointments',
-        'schedule': 3600,  # Run every hour
+    "mark-missed-appointments-every-hour": {
+        "task": "appointments_app.tasks.mark_missed_appointments",
+        "schedule": 3600,  # Run every hour
     },
 }
 
 # CELERY_BROKER_URL = 'amqp://localhost'
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
 # CELERY_RESULT_BACKEND = 'django-db'
-
-
-
