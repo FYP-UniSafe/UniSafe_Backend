@@ -34,6 +34,7 @@ class AcceptAppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = [
             "appointment_id",
+            "meeting_token",
             "meeting_id",
             "physical_location",
             "start_time",
@@ -49,7 +50,7 @@ class AcceptAppointmentSerializer(serializers.ModelSerializer):
         if session_type == "Online":
             attrs.pop("physical_location", None)
         elif session_type == "Physical":
-            attrs.pop("meeting_id", None)
+            attrs.pop("meeting_id", "meeting_token", None)
 
             if not physical_location:
                 raise serializers.ValidationError(

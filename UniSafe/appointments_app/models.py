@@ -31,6 +31,7 @@ class Appointment(models.Model):
     time_slot = models.CharField(max_length=13, null=True, blank=True, default=None)
     physical_location = models.CharField(max_length=25, blank=True, default=None, null=True)
     meeting_id = models.CharField(max_length=255, null=True, blank=True)
+    meeting_token = models.TextField(null=True, blank=True)
 
     # Student information
     client = models.ForeignKey(
