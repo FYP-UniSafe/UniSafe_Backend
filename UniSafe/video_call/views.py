@@ -19,6 +19,41 @@ VIDEOSDK_SECRET_KEY = "1c643bc31a5d4bc4c61195951cb5479a5a1f433611e858fdb0b0442c7
 VIDEOSDK_API_ENDPOINT = "https://api.videosdk.live/v2"
 
 
+# class CreateMeeting(APIView):
+#     permission_classes = (IsAuthenticated,)
+
+#     def post(self, request):
+#         data = request.data
+#         token = data.get("token")
+#         appointment_id = data.get("appointment_id")
+
+#         if not appointment_id:
+#             return Response(
+#                 {"error": "Appointment ID is required"},
+#                 status=status.HTTP_400_BAD_REQUEST,
+#             )
+
+#         try:
+#             appointment = Appointment.objects.get(appointment_id=appointment_id)
+#         except Appointment.DoesNotExist:
+#             return Response(
+#                 {"error": f"Appointment {appointment_id} doesn't exist."},
+#                 status=status.HTTP_404_NOT_FOUND,
+#             )
+
+#         res = requests.post(
+#             f"{VIDEOSDK_API_ENDPOINT}/rooms", headers={"Authorization": token}
+#         )
+
+#         if res.status_code == 200:
+#             meeting_data = res.json()
+#             meeting_id = meeting_data.get("roomId")
+#             # Update the appointment with the meeting ID
+#             appointment.meeting_id = meeting_id
+#             appointment.save()
+
+
+#         return Response(res.json())
 class CreateMeeting(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -48,9 +83,15 @@ class CreateMeeting(APIView):
         if res.status_code == 200:
             meeting_data = res.json()
             meeting_id = meeting_data.get("roomId")
-            # Update the appointment with the meeting ID
             appointment.meeting_id = meeting_id
             appointment.save()
+
+            response_data = {
+                "roomId": meeting_id,
+                "token": token,
+                "appointment_id": appointment_id,
+            }
+            return Response(response_data)
 
         return Response(res.json())
 
