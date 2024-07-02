@@ -51,7 +51,7 @@ class AppointmentAdmin(admin.ModelAdmin):
                     "start_time",
                     "end_time",
                     "time_slot",
-                    "meeting_id"
+                    "meeting_id",
                     "physical_location",
                 ),
             },
