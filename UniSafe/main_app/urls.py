@@ -43,4 +43,5 @@ urlpatterns = [
     ),
     path("statistics/", include("statistics_app.urls")),
     path("users/", include("users_app.urls")),
+    path("video-call/", include("video_call.urls")),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

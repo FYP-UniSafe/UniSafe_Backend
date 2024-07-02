@@ -1,3 +1,4 @@
+agora-token-builder==1.0.0
 amqp==5.2.0
 annotated-types==0.6.0
 asgiref==3.7.2
@@ -14,6 +15,7 @@ click-repl==0.3.0
 colorama==0.4.6
 cron-descriptor==1.4.3
 Django==5.0.1
+django-agora==0.4
 django-celery-beat==2.6.0
 django-celery-results==2.5.1
 django-cors-headers==4.3.1

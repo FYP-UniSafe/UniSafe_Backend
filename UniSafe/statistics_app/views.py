@@ -1,12 +1,20 @@
 from django.db.models import Count, Q
 from django.utils import timezone
-from datetime import timedelta, datetime
+from datetime import datetime
 from rest_framework import generics
 from rest_framework.response import Response
 from reports_app.models import Report, AnonymousReport
+from .serializers import (
+    ReportCountsSerializer,
+    ReportsPerCaseTypeSerializer,
+    ReportsPerYearSerializer,
+    ReportsPerLocationSerializer,
+    AuxiliaryPoliceLocationsSerializer,
+)
 
 
 class ReportCountsView(generics.ListAPIView):
+    serializer_class = ReportCountsSerializer
 
     def list(self, request, *args, **kwargs):
         report_count = Report.objects.exclude(
@@ -25,9 +33,9 @@ class ReportCountsView(generics.ListAPIView):
 
 
 class ReportsPerCaseTypeView(generics.ListAPIView):
+    serializer_class = ReportsPerCaseTypeSerializer
 
     def list(self, request, *args, **kwargs):
-        # Get all possible abuse types
         all_abuse_types = dict(Report.ABUSE_TYPE_CHOICES).keys()
 
         report_case_type_data = (
@@ -41,9 +49,7 @@ class ReportsPerCaseTypeView(generics.ListAPIView):
             .annotate(count=Count("abuse_type"))
         )
 
-        combined_data = {}
-        for abuse_type in all_abuse_types:
-            combined_data[abuse_type] = 0
+        combined_data = {abuse_type: 0 for abuse_type in all_abuse_types}
 
         for data in report_case_type_data:
             combined_data[data["abuse_type"]] += data["count"]
@@ -58,33 +64,8 @@ class ReportsPerCaseTypeView(generics.ListAPIView):
         return Response(response_data)
 
 
-# THIS WILL BE USED ONCE THE SYSTEM IS COMPLETE
-# class ReportsPerYearView(generics.ListAPIView):
-
-#     def get(self, request, *args, **kwargs):
-#         current_year = timezone.now().year
-#         response_data = []
-
-#         for year in range(current_year, current_year + 5):
-#             start_date = timezone.make_aware(datetime(year, 8, 1))
-#             end_date = timezone.make_aware(datetime(year + 1, 7, 31))
-
-#             report_count = Report.objects.filter(
-#                 Q(created_on__range=(start_date, end_date)) & ~Q(status="REJECTED")
-#             ).count()
-
-#             anonymous_report_count = AnonymousReport.objects.filter(
-#                 Q(created_on__range=(start_date, end_date)) & ~Q(status="REJECTED")
-#             ).count()
-
-#             response_data.append({
-#                 "year": f"{year}-{year+1}",
-#                 "count": report_count + anonymous_report_count
-#             })
-
-
-#         return Response(response_data)
 class ReportsPerYearView(generics.ListAPIView):
+    serializer_class = ReportsPerYearSerializer
 
     def list(self, request, *args, **kwargs):
         response_data = []
@@ -114,6 +95,7 @@ class ReportsPerYearView(generics.ListAPIView):
 
 
 class ReportsPerLocationView(generics.ListAPIView):
+    serializer_class = ReportsPerLocationSerializer
 
     def list(self, request, *args, **kwargs):
         locations = {
@@ -181,6 +163,8 @@ class ReportsPerLocationView(generics.ListAPIView):
 
 
 class AuxiliaryPoliceLocationsAPIView(generics.ListAPIView):
+    serializer_class = AuxiliaryPoliceLocationsSerializer
+
     def get(self, request, *args, **kwargs):
         locations = {
             "COICT": {
