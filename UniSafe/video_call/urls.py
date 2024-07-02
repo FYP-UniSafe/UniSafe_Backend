@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import GenerateToken, CreateMeeting, ValidateMeeting
+from .views import GenerateToken, CreateMeeting
 
 urlpatterns = [
     path('get-token/', GenerateToken.as_view(), name='generate_token'),
