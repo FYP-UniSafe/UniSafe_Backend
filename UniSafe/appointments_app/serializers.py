@@ -28,10 +28,17 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
 
 class AcceptAppointmentSerializer(serializers.ModelSerializer):
     appointment_id = serializers.CharField(read_only=True)
+    meeting_id = serializers.CharField(read_only=True)  # Include meeting_id
 
     class Meta:
         model = Appointment
-        fields = ["appointment_id", "physical_location", "start_time", "end_time"]
+        fields = [
+            "appointment_id",
+            "meeting_id",
+            "physical_location",
+            "start_time",
+            "end_time",
+        ]
 
     def validate(self, attrs):
         session_type = (
@@ -41,10 +48,13 @@ class AcceptAppointmentSerializer(serializers.ModelSerializer):
 
         if session_type == "Online":
             attrs.pop("physical_location", None)
-        elif session_type == "Physical" and not physical_location:
-            raise serializers.ValidationError(
-                "physical_location is required for Physical appointments."
-            )
+        elif session_type == "Physical":
+            attrs.pop("meeting_id", None)
+
+            if not physical_location:
+                raise serializers.ValidationError(
+                    "physical_location is required for Physical appointments."
+                )
 
         if not attrs.get("start_time"):
             raise serializers.ValidationError("start_time is required.")
@@ -56,6 +66,12 @@ class AcceptAppointmentSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if instance.session_type == "Online" and "physical_location" in representation:
+
+        session_type = instance.session_type
+
+        if session_type == "Online" and "physical_location" in representation:
             del representation["physical_location"]
+        elif session_type == "Physical" and "meeting_id" in representation:
+            del representation["meeting_id"]
+
         return representation
