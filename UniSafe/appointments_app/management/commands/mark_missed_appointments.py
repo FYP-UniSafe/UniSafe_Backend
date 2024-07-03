@@ -4,7 +4,7 @@ from datetime import timedelta
 from appointments_app.models import Appointment
 
 class Command(BaseCommand):
-    help = 'Mark appointments as MISSED if they are more than 2 hours past their start time.'
+    help = 'Mark appointments as MISSED if they are more than 1 minute past their start time.'
 
     def handle(self, *args, **kwargs):
         now = timezone.now()

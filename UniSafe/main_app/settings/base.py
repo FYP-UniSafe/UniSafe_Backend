@@ -74,10 +74,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:4200", "https://unisafeudsm.nucci.live"]
 
-# CORS_ALLOWED_ORIGIN_REGEXES = [
-#     r"^https://.*\.ngrok\.io$",
-# ]
-
 # CORS_ALLOW_ALL_ORIGINS = True
 
 WSGI_APPLICATION = "main_app.wsgi.application"
@@ -197,10 +193,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "assets")
 CELERY_BEAT_SCHEDULE = {
     "mark-missed-appointments-every-hour": {
         "task": "appointments_app.tasks.mark_missed_appointments",
-        "schedule": 3600,  # Run every hour
+        "schedule": 3600,
     },
 }
 
-# CELERY_BROKER_URL = 'amqp://localhost'
-CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+
+
+CELERY_BROKER_URL = 'amqp://localhost'
 # CELERY_RESULT_BACKEND = 'django-db'
