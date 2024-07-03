@@ -74,9 +74,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:4200", "https://unisafeudsm.nucci.live"]
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://.*\.ngrok\.io$",
-]
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#     r"^https://.*\.ngrok\.io$",
+# ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
 
