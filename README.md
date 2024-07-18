@@ -1,6 +1,6 @@
-# UniSafe Backend
+## UniSafe Backend
 
-## Prerequisites
+### Prerequisites
 
 Before you begin, ensure you have met the following requirements for the Django backend:
 
@@ -14,7 +14,7 @@ Before you begin, ensure you have met the following requirements for the Django 
 
 Ensure these prerequisites are met to successfully set up and run the Django backend of your application.
 
-## Setup
+### Setup
 
 1. **Clone the repository:**
 
@@ -66,7 +66,7 @@ Ensure these prerequisites are met to successfully set up and run the Django bac
 
 9. **Open your browser and navigate to `http://localhost:8000/` to view the application and view the `OpenAPI` swagger docs.**
 
-## Setting Up Postgres on Django Project
+### Setting Up Postgres on Django Project
 
 To set up PostgreSQL on a Linux system, you will need to do the following steps:
 
@@ -123,4 +123,7 @@ DATABASES = {
 }
 ```
 
-By following these steps, you should be able to set up PostgreSQL on your Linux system and use it with Django.
+### Contributing
+
+**Contact**
+For inquiries, contact [Mandy, Nuhu Paschal](mailto:caljr9301@gmail.com).
