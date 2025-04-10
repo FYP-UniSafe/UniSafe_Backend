@@ -12,10 +12,12 @@ import jwt
 import datetime
 from django.conf import settings
 
+
 # VIDEOSDK_API_KEY = settings.VIDEOSDK_API_KEY
 # VIDEOSDK_SECRET_KEY = settings.VIDEOSDK_SECRET_KEY
-VIDEOSDK_API_KEY = "65bdacaa-d670-4130-b5ed-0c72d73a69df"
-VIDEOSDK_SECRET_KEY = "1c643bc31a5d4bc4c61195951cb5479a5a1f433611e858fdb0b0442c7644023e"
+VIDEOSDK_API_KEY = settings.VIDEOSDK_API_KEY
+VIDEOSDK_SECRET_KEY = settings.VIDEOSDK_SECRET_KEY
+
 VIDEOSDK_API_ENDPOINT = "https://api.videosdk.live/v2"
 
 

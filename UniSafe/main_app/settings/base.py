@@ -201,3 +201,9 @@ CELERY_BEAT_SCHEDULE = {
 
 CELERY_BROKER_URL = 'amqp://localhost'
 # CELERY_RESULT_BACKEND = 'django-db'
+
+
+from decouple import config
+
+VIDEOSDK_API_KEY = config("VIDEOSDK_API_KEY")
+VIDEOSDK_SECRET_KEY = config("VIDEOSDK_SECRET_KEY")
