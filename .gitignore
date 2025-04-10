@@ -3,3 +3,4 @@
 *.pyc
 env
 ideas.txt
+echo "UniSafedb.sqlite3" >> .gitignore
